@@ -4362,23 +4362,8 @@ body[data-type="about"] #web_bg {
   pointer-events: none;
   z-index: 3;
 }
-#about-page .author-content-item-group.column.mapAndInfo {
-  width: 100%;
-}
-#about-page .author-content-item-group.column {
-  -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
-  -o-box-orient: horizontal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-#about-page .author-content-item.map {
-  width: 50%;
-}
-#about-page .author-content-item.selfInfo {
-  height: 100%;
-  width: 49%;
+ {
+  body: 1;
 }
 @-moz-keyframes loading-bar {
   0% {
@@ -6001,6 +5986,9 @@ body[data-type="link"] #page .page-title {
 body[data-type="music"] {
   background: #0d0d0d;
 }
+body[data-type="music"] #center-console + label i {
+  background: var(--anzhiyu-white) !important;
+}
 body[data-type="music"] .layout {
   -webkit-box-orient: horizontal;
   -moz-box-orient: horizontal;
@@ -6024,8 +6012,16 @@ body[data-type="music"] #page-header #nav {
   background: 0 0 !important;
   border-bottom: none !important;
 }
-body[data-type="music"] #page-header #nav a,
-body[data-type="music"] #page-header #nav .back-home-button {
+body[data-type="music"] #page-header #nav #blog_name a,
+body[data-type="music"] #page-header #nav .mask-name-container a,
+body[data-type="music"] #page-header #nav #menus a,
+body[data-type="music"] #page-header #nav #nav-right .nav-button a,
+body[data-type="music"] #page-header #nav #nav-right #toggle-menu a,
+body[data-type="music"] #page-header #nav #blog_name .back-home-button,
+body[data-type="music"] #page-header #nav .mask-name-container .back-home-button,
+body[data-type="music"] #page-header #nav #menus .back-home-button,
+body[data-type="music"] #page-header #nav #nav-right .nav-button .back-home-button,
+body[data-type="music"] #page-header #nav #nav-right #toggle-menu .back-home-button {
   color: var(--anzhiyu-white);
 }
 body[data-type="music"] #footer,
@@ -9918,7 +9914,6 @@ h1.page-title + .tag-cloud-list {
   bottom: 0;
   height: var(--icon-size);
   width: var(--icon-size);
-  z-index: 31;
   cursor: pointer;
   -webkit-transition: 1s;
   -moz-transition: 1s;
@@ -9984,6 +9979,7 @@ h1.page-title + .tag-cloud-list {
 #center-console:checked + label {
   right: 0;
   top: 0.5rem;
+  z-index: 31;
 }
 #center-console:checked + label:hover::after {
   background: var(--anzhiyu-main) !important;
@@ -10023,6 +10019,10 @@ h1.page-title + .tag-cloud-list {
   -o-transform: rotate(45deg) !important;
   -ms-transform: rotate(45deg) !important;
   transform: rotate(45deg) !important;
+}
+[data-theme="dark"] #center-console:checked + label:is(.widget,
+#center-console:checked + label .widget:hover) i {
+  background: var(--anzhiyu-black) !important;
 }
 div#travellings_button {
   display: -webkit-box;
@@ -18259,6 +18259,10 @@ details .content > *:nth-child(1) {
   pointer-events: all;
 }
 
+#console.reward-show .console-card-group {
+  pointer-events: none;
+}
+
 #console .console-card-group {
   display: flex;
   justify-content: space-between;
@@ -18785,7 +18789,7 @@ body:has(#console.show) #nav-music .aplayer .aplayer-lrc .aplayer-lrc-contents {
   }
   body:has(#console.show) .aplayer-list {
     position: fixed;
-    z-index: 1002;
+    display: none;
     width: 100%;
     bottom: -76%;
     left: 0;
