@@ -17422,9 +17422,9 @@ div#category {
 }
 
 #article-container
-  a:not([data-fancybox="gallery"]):not(.headerlink):not(.cf-friends-link):not(.tag-Link):not(.btn-anzhiyu):not(
-    .no-text-decoration
-  ) {
+  a:not([data-fancybox="gallery"]):not(.headerlink):not(.cf-friends-link):not(
+    .tag-Link
+  ):not(.btn-anzhiyu):not(.no-text-decoration) {
   font-weight: 500;
   border-bottom: solid 2px var(--anzhiyu-lighttext);
   color: var(--anzhiyu-fontcolor);
@@ -17433,9 +17433,9 @@ div#category {
   font-family: auto;
 }
 #article-container
-  a:not([data-fancybox="gallery"]):not(.headerlink):not(.cf-friends-link):not(.btn-anzhiyu):not(
-    .no-text-decoration
-  ):hover {
+  a:not([data-fancybox="gallery"]):not(.headerlink):not(.cf-friends-link):not(
+    .btn-anzhiyu
+  ):not(.no-text-decoration):hover {
   color: var(--anzhiyu-white);
   background: var(--anzhiyu-main);
   box-shadow: var(--anzhiyu-shadow-lightblack);
@@ -17534,6 +17534,15 @@ html.hide-aside .layout > div:first-child {
   to {
     opacity: 1;
   }
+}
+
+/* 欢迎信息 */
+#welcome-info {
+  border-radius: 18px;
+  padding: 8px;
+}
+[data-theme="dark"] #welcome-info {
+  background: #212121;
 }
 
 #aside-content .card-widget#card-wechat {
