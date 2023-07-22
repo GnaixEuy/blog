@@ -1895,7 +1895,7 @@ i.anzhiyu-icon-hashtag {
   --global-bg: #18171d;
   --anzhiyu-theme: #0084ff;
   --anzhiyu-theme-deep: #0076e5;
-  --anzhiyu-theme-op: rgba(0,132,255,0.137);
+  --anzhiyu-theme-op: rgba(242,185,75,0.137);
   --anzhiyu-blue: #0084ff;
   --anzhiyu-red: #ff3842;
   --anzhiyu-pink: #ff7c7c;
@@ -5616,7 +5616,7 @@ body[data-type="link"] #page .page-title {
   top: 0;
   left: 0;
   padding: 4px 8px;
-  background-color: var(--anzhiyu-theme);
+  background-color: var(--anzhiyu-blue-main);
   -webkit-box-shadow: var(--anzhiyu-shadow-blue);
   box-shadow: var(--anzhiyu-shadow-blue);
   color: var(--anzhiyu-white);
@@ -6124,12 +6124,6 @@ body[data-type="link"] #page .page-title {
 #recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap {
   color: var(--anzhiyu-fontcolor);
   font-size: 90%;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: box;
-  display: flex;
   -webkit-box-direction: reverse;
   -moz-box-direction: reverse;
   -o-box-direction: reverse;
@@ -6146,7 +6140,6 @@ body[data-type="link"] #page .page-title {
   -webkit-justify-content: space-between;
   justify-content: space-between;
   position: absolute;
-  bottom: 30px;
   padding: 0 32px;
   width: 100%;
   -webkit-box-align: center;
@@ -6155,13 +6148,17 @@ body[data-type="link"] #page .page-title {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
-}
-#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap .article-meta {
   white-space: nowrap;
   overflow: hidden;
-  display: inline-block;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
+  display: inline-block;
+  bottom: 20px;
+}
+#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap .sticky-warp {
+  position: absolute;
+  top: -100px;
+  right: 32px;
 }
 #recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .post-meta-date {
   color: var(--anzhiyu-fontcolor);
@@ -6184,11 +6181,6 @@ body[data-type="link"] #page .page-title {
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
 }
 @media screen and (max-width: 500px) {
   #recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .post-meta-date {
@@ -6197,6 +6189,7 @@ body[data-type="link"] #page .page-title {
 }
 #recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap .sticky {
   color: #ff7242;
+  font-size: 12px;
 }
 #recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap i {
   margin: 0 4px 0 0;
