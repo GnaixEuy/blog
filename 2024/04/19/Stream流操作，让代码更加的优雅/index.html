@@ -1,0 +1,713 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Stream流操作，让代码更加的优雅 | GnaixEuy</title><meta name="keywords" content="Java,流操作,基础语法"><meta name="author" content="GnaixEuy"><meta name="copyright" content="GnaixEuy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Stream流操作，让代码更加的优雅"><meta name="application-name" content="Stream流操作，让代码更加的优雅"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Stream流操作，让代码更加的优雅"><meta property="og:url" content="https://blog.gnaixeuy.cn/2024/04/19/Stream流操作，让代码更加的优雅/index.html"><meta property="og:site_name" content="GnaixEuy"><meta property="og:description" content="在JAVA中，涉及到对数组、Collection等集合类中的元素进行操作的时候，通常会通过循环的方式进行逐个处理，或者使用Stream的方式进行处理。 例如，现在有这么一个需求：  从给定句子中返回单词长度大于5的单词列表，按长度倒序输出，最多返回3个  在JAVA7及之前的代码中，我们会可以照如下"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://img2.baidu.com/it/u=2682372405,2726946175&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=603&amp;h=412"><meta property="article:author" content="GnaixEuy"><meta property="article:tag" content=""><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://img2.baidu.com/it/u=2682372405,2726946175&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=603&amp;h=412"><meta name="description" content="在JAVA中，涉及到对数组、Collection等集合类中的元素进行操作的时候，通常会通过循环的方式进行逐个处理，或者使用Stream的方式进行处理。 例如，现在有这么一个需求：  从给定句子中返回单词长度大于5的单词列表，按长度倒序输出，最多返回3个  在JAVA7及之前的代码中，我们会可以照如下"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.gnaixeuy.cn/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?9fa37e20a4e6ec67fdadd6ed780aaa48";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  linkPageTop: {"enable":true,"title":"与数百名博主无限进步","addFriendPlaceholder":"昵称（请勿包含博客等字样）：\n网站地址（要求博客地址，请勿提交个人主页）：\n头像图片url（请提供尽可能清晰的图片）：\n描述：\n站点截图（可选）：\n"},
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: {"enable":true,"ck":"3FHqfUkvR1jefQRq","LingQueMonitorID":"3FHrKK2VGfLWEyVR"},
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://gnaixeuy-twikoo.hf.space',
+  commentBarrageConfig:undefined,
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 专修交互与设计","🏃 脚踏实地行动派","🧱 团队小组发动机","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":true,"limitCount":50,"languages":{"author":"作者: GnaixEuy","link":"链接: ","source":"来源: GnaixEuy","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'GnaixEuy',
+  title: 'Stream流操作，让代码更加的优雅',
+  postAI: '',
+  pageFillDescription: 'Stream初相识, Stream方法使用, map与flatMap, peek和foreach方法, filter、sorted、distinct、limit, 简单结果终止方法, 结果收集终止方法, 生成集合, 生成拼接字符串, 数据批量数学运算, 并行Stream, 机制说明, 约束与限制, 回答最初的问题, 总结在中涉及到对数组等集合类中的元素进行操作的时候通常会通过循环的方式进行逐个处理或者使用的方式进行处理例如现在有这么一个需求从给定句子中返回单词长度大于的单词列表按长度倒序输出最多返回个在及之前的代码中我们会可以照如下的方式进行实现常规方式从给定句子中返回单词长度大于的单词列表按长度倒序输出最多返回个给定的句子约定非空且单词之间仅由一个空格分隔倒序输出符合条件的单词列表先切割句子获取具体的单词信息循环判断单词的长度先过滤出符合长度要求的单词对符合条件的列表按照长度进行排序判断结果长度如果大于则截取前三个数据的子返回在及之后的版本中借助流我们可以更加优雅的写出如下代码方式从给定句子中返回单词长度大于的单词列表按长度倒序输出最多返回个给定的句子约定非空且单词之间仅由一个空格分隔倒序输出符合条件的单词列表直观感受上的实现方式代码更加简洁一气呵成很多的同学在代码中也经常使用流但是对流的认知往往也是仅限于会一些简单的等操作但的可以适用的场景与能力远不止这些那么问题来了相较于传统的的方式处理到底有啥优势这里我们可以先搁置这个问题先整体全面的了解下然后再来讨论下这个问题笔者结合在团队中多年的代码检视遇到的情况结合平时项目编码实践经验对的核心要点与易混淆用法典型使用场景等进行了详细的梳理总结希望可以帮助大家对有个更全面的认知也可以更加高效的应用到项目开发中去初相识概括讲可以将流操作分为种类型创建中间处理终止每个管道操作类型都包含若干方法先列举下各个方法的功能介绍开始管道主要负责新建一个流或者基于现有的数组等集合类型对象创建出新的流功能说明创建出一个新的串行流对象创建出一个可并行执行的流对象通过给定的一系列元素创建一个新的串行流对象中间管道负责对进行处理操作并返回一个新的对象中间管道操作可以进行叠加功能说明按照条件过滤符合要求的元素返回新的流将已有元素转换为另一个对象类型一对一逻辑返回新的流将已有元素转换为另一个对象类型一对多逻辑即原来一个元素对象可能会转换为个或者多个新类型的元素返回新的流仅保留集合前面指定个数的元素返回新的流跳过集合前面指定个数的元素返回新的流将两个流的数据合并起来为个新的流返回新的流对中所有元素进行去重返回新的流对中所有的元素按照指定规则进行排序返回新的流对流中的每个元素进行逐个遍历处理返回处理后的流终止管道顾名思义通过终止管道操作之后流将会结束最后可能会执行某些逻辑处理或者是按照要求返回某些执行后的结果数据功能说明返回处理后最终的元素个数返回处理后的元素最大值返回处理后的元素最小值找到第一个符合条件的元素时则终止流处理找到任何一个符合条件的元素时则退出流处理这个对于串行流时与相同对于并行流时比较高效任何分片中找到都会终止后续计算逻辑返回一个值类似于用于判断是否有符合条件的元素返回一个值用于判断是否所有元素都符合条件返回一个值用于判断是否所有元素都不符合条件将流转换为指定的类型通过进行指定将流转换为数组将流转换为对象无返回值对元素进行逐个遍历然后执行给定的处理逻辑方法使用与与都是用于转换已有的元素为其它元素区别点在于必须是一对一的即每个元素都只能转换为个新的元素可以是一对多的即每个元素都可以转换为个或者多个新的元素比如有一个字符串列表现在需要将其转为对象列表可以使用来实现演示的用途一对一转换使用流操作执行之后会发现每一个元素都被转换为对应新的元素但是前后总元素个数是一致的再比如现有一个句子列表需要将句子中每个单词都提取出来得到一个所有单词列表这种情况用就搞不定了需要上场了使用流操作执行结果如下可以看到结果列表中元素个数是比原始列表元素个数要多的这里需要补充一句操作的时候其实是先每个元素处理并返回一个新的然后将多个展开合并为了一个完整的新的如下和方法和都可以用于对元素进行遍历然后逐个的进行处理但根据前面的介绍属于中间方法而属于终止方法这也就意味着只能作为管道中途的一个处理步骤而没法直接执行得到结果其后面必须还要有其它终止操作的时候才会被执行而作为无返回值的终止方法则可以直接执行相关操作演示点仅操作最终不会执行演示点仅操作最终会执行演示点操作后面增加终止操作会执行输出结果可以看出独自调用时并没有被执行但后面加上终止操作之后便可以被执行而可以直接被执行这几个都是常用的的中间操作方法具体的方法的含义在上面的表格里面有说明具体使用的时候可以根据需要选择一个或者多个进行组合使用或者同时使用多个相同方法的组合使用流操作上面的代码片段的处理逻辑很清晰使用过滤掉不符合条件的数据通过对存量元素进行去重操作通过操作将字符串转成整数类型借助指定按照数字大小正序排列使用截取排在前位的元素又一次使用将转为对象类型使用终止操作将最终处理后的数据收集到中输出结果简单结果终止方法按照前面介绍的终止方法里面像等方法均属于这里说的简单结果终止方法所谓简单指的是其结果形式是数字布尔值或者对象值等统计操作后剩余的元素个数判断是否有元素值等于操作执行后结果为避坑提醒这里需要补充提醒下一旦一个被执行了终止操作之后后续便不可以再读这个流执行其他的操作了否则会报错看下面示例统计操作后剩余的元素个数下面会报错判断是否有元素值等于上面会报错执行的时候结果如下下面会报错上面会报错因为已经被执行终止方法了所以对再执行方法的时候就会报错这一点在使用的时候需要特别注意结果收集终止方法因为主要用于对集合数据的处理场景所以除了上面几种获取简单结果的终止方法之外更多的场景是获取一个集合类的结果对象比如或者等这里就需要方法出场了它可以支持生成如下类型的结果数据一个集合类比如或者等对象支持将多个字符串进行拼接处理并输出拼接后结果一个可以记录个数或者计算总和的对象数据批量运算统计生成集合应该算是最常被使用到的一个场景了成成成为为对象结果如下生成拼接字符串将一个或者数组中的值拼接到一个字符串里并以逗号分隔开这个场景相信大家都不陌生吧如果通过循环和去循环拼接还得考虑下最后一个逗号如何处理的问题很繁琐去掉末尾多拼接的逗号拼接后但是现在有了使用可以轻而易举的实现拼接后两种方式都可以得到完全相同的结果但的方式更优雅拼接后数据批量数学运算还有一种场景实际使用的时候可能会比较少就是使用生成数字数据的总和信息也可以了解下实现方式计算平均值平均值数据统计信息数据统计信息上面的例子中使用方法来对中元素值进行数学运算结果如下平均值总和并行机制说明使用并行流可以有效利用计算机的多硬件提升逻辑的执行速度并行流通过将一整个划分为多个片段然后对各个分片流并行执行处理逻辑最后将各个分片流的执行结果汇总为一个整体流约束与限制并行流类似于多线程在并行处理所以与多线程场景相关的一些问题同样会存在比如死锁等问题所以在并行流终止执行的函数逻辑必须要保证线程安全回答最初的问题到这里关于的相关概念与用法介绍基本就讲完了我们再把焦点切回本文刚开始时提及的一个问题相较于传统的的方式处理到底有啥优势根据前面的介绍我们应该可以得出如下几点答案代码更简洁偏声明式的编码风格更容易体现出代码的逻辑意图逻辑间解耦一个中间处理逻辑无需关注上游与下游的内容只需要按约定实现自身逻辑即可并行流场景效率会比迭代器逐个循环更高函数式接口延迟执行的特性中间管道操作不管有多少步骤都不会立即执行只有遇到终止操作的时候才会开始执行可以避免一些中间不必要的操作消耗当然了也不全是优点在有些方面也有其弊端代码调测不便程序员从历史写法切换到时需要一定的适应时间总结好啦关于的理解要点与使用技能的阐述就先到这里啦那通过上面的介绍各位小伙伴们是否已经跃跃欲试了呢快去项目中使用体验下吧当然啦如果有疑问也欢迎找我一起探讨探讨咯',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-19 13:12:38',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">GnaixEuy</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Java/" style="font-size: 1.05rem;">Java<sup>1</sup></a><a href="/tags/markdown/" style="font-size: 1.05rem;">markdown<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 1.05rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" style="font-size: 1.05rem;">基础语法<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 1.05rem;">快速录入<sup>1</sup></a><a href="/tags/%E6%B5%81%E6%93%8D%E4%BD%9C/" style="font-size: 1.05rem;">流操作<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/04/"><span class="card-archive-list-date">四月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/03/"><span class="card-archive-list-date">三月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/Java/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Java</span></a><a class="article-meta__tags" href="/tags/%E6%B5%81%E6%93%8D%E4%BD%9C/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>流操作</span></a><a class="article-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>基础语法</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Stream流操作，让代码更加的优雅</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-04-19T05:03:20.000Z" title="发表于 2024-04-19 13:03:20">2024-04-19</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-04-19T05:12:38.040Z" title="更新于 2024-04-19 13:12:38">2024-04-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">4.4k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="Stream流操作，让代码更加的优雅"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为厦门"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>厦门</span><span class="post-meta-separator"></span><span class="post-meta-commentcount"><i class="anzhiyufont anzhiyu-icon-comments post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/#post-comment" tabindex="-1"><span id="twikoo-count"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://www.kantop.net/upload/2021/01-18/5206802749656920145.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://blog.gnaixeuy.cn/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/"><header><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a><a href="/tags/Java/" tabindex="-1" itemprop="url">Java</a><a href="/tags/%E6%B5%81%E6%93%8D%E4%BD%9C/" tabindex="-1" itemprop="url">流操作</a><a href="/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" tabindex="-1" itemprop="url">基础语法</a><h1 id="CrawlerTitle" itemprop="name headline">Stream流操作，让代码更加的优雅</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">GnaixEuy</span><time itemprop="dateCreated datePublished" datetime="2024-04-19T05:03:20.000Z" title="发表于 2024-04-19 13:03:20">2024-04-19</time><time itemprop="dateCreated datePublished" datetime="2024-04-19T05:12:38.040Z" title="更新于 2024-04-19 13:12:38">2024-04-19</time></header><p>在JAVA中，涉及到对<code>数组</code>、<code>Collection</code>等集合类中的元素进行操作的时候，通常会通过<strong>循环的方式</strong>进行逐个处理，或者<strong>使用Stream</strong>的方式进行处理。</p>
+<p>例如，现在有这么一个需求：</p>
+<blockquote>
+<p>从给定句子中返回单词长度大于5的单词列表，按长度倒序输出，最多返回3个</p>
+</blockquote>
+<p>在<strong>JAVA7及之前</strong>的代码中，我们会可以照如下的方式进行实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 【常规方式】</span></span><br><span class="line"><span class="comment"> * 从给定句子中返回单词长度大于5的单词列表，按长度倒序输出，最多返回3个</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> sentence 给定的句子，约定非空，且单词之间仅由一个空格分隔</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 倒序输出符合条件的单词列表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> List&lt;String&gt; <span class="title function_">sortGetTop3LongWords</span><span class="params">(<span class="meta">@NotNull</span> String sentence)</span> &#123;</span><br><span class="line">    <span class="comment">// 先切割句子，获取具体的单词信息</span></span><br><span class="line">    String[] words = sentence.split(<span class="string">&quot; &quot;</span>);</span><br><span class="line">    List&lt;String&gt; wordList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="comment">// 循环判断单词的长度，先过滤出符合长度要求的单词</span></span><br><span class="line">    <span class="keyword">for</span> (String word : words) &#123;</span><br><span class="line">        <span class="keyword">if</span> (word.length() &gt; <span class="number">5</span>) &#123;</span><br><span class="line">            wordList.add(word);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 对符合条件的列表按照长度进行排序</span></span><br><span class="line">    wordList.sort((o1, o2) -&gt; o2.length() - o1.length());</span><br><span class="line">    <span class="comment">// 判断list结果长度，如果大于3则截取前三个数据的子list返回</span></span><br><span class="line">    <span class="keyword">if</span> (wordList.size() &gt; <span class="number">3</span>) &#123;</span><br><span class="line">        wordList = wordList.subList(<span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> wordList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<strong>JAVA8及之后</strong>的版本中，借助Stream流，我们可以更加优雅的写出如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 【Stream方式】</span></span><br><span class="line"><span class="comment"> * 从给定句子中返回单词长度大于5的单词列表，按长度倒序输出，最多返回3个</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> sentence 给定的句子，约定非空，且单词之间仅由一个空格分隔</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 倒序输出符合条件的单词列表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> List&lt;String&gt; <span class="title function_">sortGetTop3LongWordsByStream</span><span class="params">(<span class="meta">@NotNull</span> String sentence)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Arrays.stream(sentence.split(<span class="string">&quot; &quot;</span>))</span><br><span class="line">            .filter(word -&gt; word.length() &gt; <span class="number">5</span>)</span><br><span class="line">            .sorted((o1, o2) -&gt; o2.length() - o1.length())</span><br><span class="line">            .limit(<span class="number">3</span>)</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直观感受上，<code>Stream</code>的实现方式代码更加简洁、一气呵成。很多的同学在代码中也经常使用Stream流，但是对Stream流的认知往往也是仅限于会一些简单的<code>filter</code>、<code>map</code>、<code>collect</code>等操作，但JAVA的Stream可以适用的场景与能力远不止这些。</p>
+<hr>
+<p>那么问题来了：<strong>Stream相较于传统的foreach的方式处理stream，到底有啥优势</strong>？</p>
+<p>这里我们可以先搁置这个问题，先整体全面的了解下Stream，然后再来讨论下这个问题。</p>
+<p>笔者结合在团队中多年的代码检视遇到的情况，结合平时项目编码实践经验，对<strong>Stream的核心要点与易混淆用法</strong>、<strong>典型使用场景</strong>等进行了详细的梳理总结，希望可以帮助大家对Stream有个更全面的认知，也可以更加高效的应用到项目开发中去。</p>
+<h2 id="Stream初相识"><a href="#Stream初相识" class="headerlink" title="Stream初相识"></a>Stream初相识</h2><p>概括讲，可以将Stream流操作分为<strong>3种类型</strong>：</p>
+<ul>
+<li>创建Stream</li>
+<li>Stream中间处理</li>
+<li>终止Steam</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pics.codingcoder.cn/pics/202207101448482.png" alt="img"></p>
+<p>每个Stream管道操作类型都包含若干API方法，先列举下各个API方法的功能介绍。</p>
+<ul>
+<li><strong>开始管道</strong></li>
+</ul>
+<p>主要负责新建一个Stream流，或者基于现有的数组、List、Set、Map等集合类型对象创建出新的Stream流。</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>stream()</td>
+<td>创建出一个新的stream串行流对象</td>
+</tr>
+<tr>
+<td>parallelStream()</td>
+<td>创建出一个可并行执行的stream流对象</td>
+</tr>
+<tr>
+<td>Stream.of()</td>
+<td>通过给定的一系列元素创建一个新的Stream串行流对象</td>
+</tr>
+</tbody></table>
+<hr>
+<ul>
+<li><strong>中间管道</strong></li>
+</ul>
+<p>负责对Stream进行处理操作，并返回一个新的Stream对象，中间管道操作可以进行<strong>叠加</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>filter()</td>
+<td>按照条件过滤符合要求的元素， 返回新的stream流</td>
+</tr>
+<tr>
+<td>map()</td>
+<td>将已有元素转换为另一个对象类型，一对一逻辑，返回新的stream流</td>
+</tr>
+<tr>
+<td>flatMap()</td>
+<td>将已有元素转换为另一个对象类型，一对多逻辑，即原来一个元素对象可能会转换为1个或者多个新类型的元素，返回新的stream流</td>
+</tr>
+<tr>
+<td>limit()</td>
+<td>仅保留集合前面指定个数的元素，返回新的stream流</td>
+</tr>
+<tr>
+<td>skip()</td>
+<td>跳过集合前面指定个数的元素，返回新的stream流</td>
+</tr>
+<tr>
+<td>concat()</td>
+<td>将两个流的数据合并起来为1个新的流，返回新的stream流</td>
+</tr>
+<tr>
+<td>distinct()</td>
+<td>对Stream中所有元素进行去重，返回新的stream流</td>
+</tr>
+<tr>
+<td>sorted()</td>
+<td>对stream中所有的元素按照指定规则进行排序，返回新的stream流</td>
+</tr>
+<tr>
+<td>peek()</td>
+<td>对stream流中的每个元素进行逐个遍历处理，返回处理后的stream流</td>
+</tr>
+</tbody></table>
+<hr>
+<ul>
+<li><strong>终止管道</strong></li>
+</ul>
+<p>顾名思义，通过终止管道操作之后，Stream流将<strong>会结束</strong>，最后可能会执行某些逻辑处理，或者是按照要求返回某些执行后的结果数据。</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count()</td>
+<td>返回stream处理后最终的元素个数</td>
+</tr>
+<tr>
+<td>max()</td>
+<td>返回stream处理后的元素最大值</td>
+</tr>
+<tr>
+<td>min()</td>
+<td>返回stream处理后的元素最小值</td>
+</tr>
+<tr>
+<td>findFirst()</td>
+<td>找到第一个符合条件的元素时则终止流处理</td>
+</tr>
+<tr>
+<td>findAny()</td>
+<td>找到任何一个符合条件的元素时则退出流处理，这个<strong>对于串行流时与findFirst相同，对于并行流时比较高效</strong>，任何分片中找到都会终止后续计算逻辑</td>
+</tr>
+<tr>
+<td>anyMatch()</td>
+<td>返回一个boolean值，类似于isContains(),用于判断是否有符合条件的元素</td>
+</tr>
+<tr>
+<td>allMatch()</td>
+<td>返回一个boolean值，用于判断是否所有元素都符合条件</td>
+</tr>
+<tr>
+<td>noneMatch()</td>
+<td>返回一个boolean值， 用于判断是否所有元素都不符合条件</td>
+</tr>
+<tr>
+<td>collect()</td>
+<td>将流转换为指定的类型，通过Collectors进行指定</td>
+</tr>
+<tr>
+<td>toArray()</td>
+<td>将流转换为数组</td>
+</tr>
+<tr>
+<td>iterator()</td>
+<td>将流转换为Iterator对象</td>
+</tr>
+<tr>
+<td>foreach()</td>
+<td>无返回值，对元素进行逐个遍历，然后执行给定的处理逻辑</td>
+</tr>
+</tbody></table>
+<h2 id="Stream方法使用"><a href="#Stream方法使用" class="headerlink" title="Stream方法使用"></a>Stream方法使用</h2><h3 id="map与flatMap"><a href="#map与flatMap" class="headerlink" title="map与flatMap"></a>map与flatMap</h3><p><code>map</code>与<code>flatMap</code>都是用于转换已有的元素为其它元素，区别点在于：</p>
+<ul>
+<li>map <strong>必须是一对一的</strong>，即每个元素都只能转换为1个新的元素</li>
+<li>flatMap <strong>可以是一对多的</strong>，即每个元素都可以转换为1个或者多个新的元素</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pics.codingcoder.cn/pics/202207101616088.png" alt="img"></p>
+<p>比如：<strong>有一个字符串ID列表，现在需要将其转为User对象列表</strong>。可以使用map来实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 演示map的用途：一对一转换</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stringToIntMap</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>, <span class="string">&quot;105&quot;</span>, <span class="string">&quot;308&quot;</span>, <span class="string">&quot;469&quot;</span>, <span class="string">&quot;627&quot;</span>, <span class="string">&quot;193&quot;</span>, <span class="string">&quot;111&quot;</span>);</span><br><span class="line">    <span class="comment">// 使用流操作</span></span><br><span class="line">    List&lt;User&gt; results = ids.stream()</span><br><span class="line">            .map(id -&gt; &#123;</span><br><span class="line">                <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">                user.setId(id);</span><br><span class="line">                <span class="keyword">return</span> user;</span><br><span class="line">            &#125;)</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    System.out.println(results);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行之后，会发现每一个元素都被转换为对应新的元素，但是前后总元素个数是一致的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[User&#123;<span class="built_in">id</span>=<span class="string">&#x27;205&#x27;</span>&#125;, </span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;105&#x27;</span>&#125;,</span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;308&#x27;</span>&#125;, </span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;469&#x27;</span>&#125;, </span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;627&#x27;</span>&#125;, </span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;193&#x27;</span>&#125;, </span><br><span class="line"> User&#123;<span class="built_in">id</span>=<span class="string">&#x27;111&#x27;</span>&#125;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>再比如：<strong>现有一个句子列表，需要将句子中每个单词都提取出来得到一个所有单词列表</strong>。这种情况用map就搞不定了，需要<code>flatMap</code>上场了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stringToIntFlatmap</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; sentences = Arrays.asList(<span class="string">&quot;hello world&quot;</span>,<span class="string">&quot;Jia Gou Wu Dao&quot;</span>);</span><br><span class="line">    <span class="comment">// 使用流操作</span></span><br><span class="line">    List&lt;String&gt; results = sentences.stream()</span><br><span class="line">            .flatMap(sentence -&gt; Arrays.stream(sentence.split(<span class="string">&quot; &quot;</span>)))</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    System.out.println(results);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下，可以看到结果列表中元素个数是比原始列表元素个数要多的：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">hello, world, Jia, Gou, Wu, Dao</span>]</span><br></pre></td></tr></table></figure>
+
+<p>这里需要补充一句，<code>flatMap</code>操作的时候其实是先每个元素处理并返回一个新的Stream，然后将多个Stream展开合并为了一个完整的新的Stream，如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pics.codingcoder.cn/pics/202207101630745.png" alt="img"></p>
+<h3 id="peek和foreach方法"><a href="#peek和foreach方法" class="headerlink" title="peek和foreach方法"></a>peek和foreach方法</h3><p><code>peek</code>和<code>foreach</code>，都可以用于对元素进行遍历然后逐个的进行处理。</p>
+<p>但根据前面的介绍，<strong>peek属于中间方法</strong>，而<strong>foreach属于终止方法</strong>。这也就意味着peek只能作为管道中途的一个处理步骤，而没法直接执行得到结果，其后面必须还要有其它终止操作的时候才会被执行；而foreach作为无返回值的终止方法，则可以直接执行相关操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPeekAndforeach</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; sentences = Arrays.asList(<span class="string">&quot;hello world&quot;</span>,<span class="string">&quot;Jia Gou Wu Dao&quot;</span>);</span><br><span class="line">    <span class="comment">// 演示点1： 仅peek操作，最终不会执行</span></span><br><span class="line">    System.out.println(<span class="string">&quot;----before peek----&quot;</span>);</span><br><span class="line">    sentences.stream().peek(sentence -&gt; System.out.println(sentence));</span><br><span class="line">    System.out.println(<span class="string">&quot;----after peek----&quot;</span>);</span><br><span class="line">    <span class="comment">// 演示点2： 仅foreach操作，最终会执行</span></span><br><span class="line">    System.out.println(<span class="string">&quot;----before foreach----&quot;</span>);</span><br><span class="line">    sentences.stream().forEach(sentence -&gt; System.out.println(sentence));</span><br><span class="line">    System.out.println(<span class="string">&quot;----after foreach----&quot;</span>);</span><br><span class="line">    <span class="comment">// 演示点3： peek操作后面增加终止操作，peek会执行</span></span><br><span class="line">    System.out.println(<span class="string">&quot;----before peek and count----&quot;</span>);</span><br><span class="line">    sentences.stream().peek(sentence -&gt; System.out.println(sentence)).count();</span><br><span class="line">    System.out.println(<span class="string">&quot;----after peek and count----&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果可以看出，peek独自调用时并没有被执行、但peek后面加上终止操作之后便可以被执行，而foreach可以直接被执行：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">----<span class="keyword">before </span>peek----</span><br><span class="line">----after peek----</span><br><span class="line">----<span class="keyword">before </span>foreach----</span><br><span class="line">hello world</span><br><span class="line"><span class="keyword">Jia </span>Gou Wu Dao</span><br><span class="line">----after foreach----</span><br><span class="line">----<span class="keyword">before </span>peek <span class="keyword">and </span><span class="built_in">count</span>----</span><br><span class="line">hello world</span><br><span class="line"><span class="keyword">Jia </span>Gou Wu Dao</span><br><span class="line">----after peek <span class="keyword">and </span><span class="built_in">count</span>----</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="filter、sorted、distinct、limit"><a href="#filter、sorted、distinct、limit" class="headerlink" title="filter、sorted、distinct、limit"></a>filter、sorted、distinct、limit</h3><p>这几个都是常用的Stream的中间操作方法，具体的方法的含义在上面的表格里面有说明。具体使用的时候，<strong>可以根据需要选择一个或者多个进行组合使用，或者同时使用多个相同方法的组合</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testGetTargetUsers</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>,<span class="string">&quot;10&quot;</span>,<span class="string">&quot;308&quot;</span>,<span class="string">&quot;49&quot;</span>,<span class="string">&quot;627&quot;</span>,<span class="string">&quot;193&quot;</span>,<span class="string">&quot;111&quot;</span>, <span class="string">&quot;193&quot;</span>);</span><br><span class="line">    <span class="comment">// 使用流操作</span></span><br><span class="line">    List&lt;Dept&gt; results = ids.stream()</span><br><span class="line">            .filter(s -&gt; s.length() &gt; <span class="number">2</span>)</span><br><span class="line">            .distinct()</span><br><span class="line">            .map(Integer::valueOf)</span><br><span class="line">            .sorted(Comparator.comparingInt(o -&gt; o))</span><br><span class="line">            .limit(<span class="number">3</span>)</span><br><span class="line">            .map(id -&gt; <span class="keyword">new</span> <span class="title class_">Dept</span>(id))</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    System.out.println(results);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码片段的处理逻辑很清晰：</p>
+<ol>
+<li>使用filter过滤掉不符合条件的数据</li>
+<li>通过distinct对存量元素进行去重操作</li>
+<li>通过map操作将字符串转成整数类型</li>
+<li>借助sorted指定按照数字大小正序排列</li>
+<li>使用limit截取排在前3位的元素</li>
+<li>又一次使用map将id转为Dept对象类型</li>
+<li>使用collect终止操作将最终处理后的数据收集到list中</li>
+</ol>
+<p>输出结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Dept&#123;<span class="built_in">id</span>=111&#125;,  Dept&#123;<span class="built_in">id</span>=193&#125;,  Dept&#123;<span class="built_in">id</span>=205&#125;]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="简单结果终止方法"><a href="#简单结果终止方法" class="headerlink" title="简单结果终止方法"></a>简单结果终止方法</h3><p>按照前面介绍的，终止方法里面像<code>count</code>、<code>max</code>、<code>min</code>、<code>findAny</code>、<code>findFirst</code>、<code>anyMatch</code>、<code>allMatch</code>、<code>nonneMatch</code>等方法，均属于这里说的简单结果终止方法。所谓简单，指的是其结果形式是数字、布尔值或者Optional对象值等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSimpleStopOptions</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>, <span class="string">&quot;10&quot;</span>, <span class="string">&quot;308&quot;</span>, <span class="string">&quot;49&quot;</span>, <span class="string">&quot;627&quot;</span>, <span class="string">&quot;193&quot;</span>, <span class="string">&quot;111&quot;</span>, <span class="string">&quot;193&quot;</span>);</span><br><span class="line">    <span class="comment">// 统计stream操作后剩余的元素个数</span></span><br><span class="line">    System.out.println(ids.stream().filter(s -&gt; s.length() &gt; <span class="number">2</span>).count());</span><br><span class="line">    <span class="comment">// 判断是否有元素值等于205</span></span><br><span class="line">    System.out.println(ids.stream().filter(s -&gt; s.length() &gt; <span class="number">2</span>).anyMatch(<span class="string">&quot;205&quot;</span>::equals));</span><br><span class="line">    <span class="comment">// findFirst操作</span></span><br><span class="line">    ids.stream().filter(s -&gt; s.length() &gt; <span class="number">2</span>)</span><br><span class="line">            .findFirst()</span><br><span class="line">            .ifPresent(s -&gt; System.out.println(<span class="string">&quot;findFirst:&quot;</span> + s));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行后结果为：</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6</span></span><br><span class="line"><span class="literal">true</span></span><br><span class="line"><span class="symbol">findFirst:</span><span class="number">205</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>避坑提醒</strong></p>
+<p>这里需要补充提醒下，<strong>一旦一个Stream被执行了终止操作之后，后续便不可以再读这个流执行其他的操作</strong>了，否则会报错，看下面示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testHandleStreamAfterClosed</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>, <span class="string">&quot;10&quot;</span>, <span class="string">&quot;308&quot;</span>, <span class="string">&quot;49&quot;</span>, <span class="string">&quot;627&quot;</span>, <span class="string">&quot;193&quot;</span>, <span class="string">&quot;111&quot;</span>, <span class="string">&quot;193&quot;</span>);</span><br><span class="line">    Stream&lt;String&gt; stream = ids.stream().filter(s -&gt; s.length() &gt; <span class="number">2</span>);</span><br><span class="line">    <span class="comment">// 统计stream操作后剩余的元素个数</span></span><br><span class="line">    System.out.println(stream.count());</span><br><span class="line">    System.out.println(<span class="string">&quot;-----下面会报错-----&quot;</span>);</span><br><span class="line">    <span class="comment">// 判断是否有元素值等于205</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        System.out.println(stream.anyMatch(<span class="string">&quot;205&quot;</span>::equals));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(<span class="string">&quot;-----上面会报错-----&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行的时候，结果如下：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">6</span></span><br><span class="line">-----下面会报错-----</span><br><span class="line"><span class="keyword">java.lang.IllegalStateException: </span>stream has already <span class="keyword">been </span>operated upon <span class="keyword">or </span><span class="keyword">closed</span></span><br><span class="line"><span class="keyword"></span>	<span class="built_in">at</span> <span class="keyword">java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:229)</span></span><br><span class="line"><span class="keyword"></span>	<span class="built_in">at</span> <span class="keyword">java.util.stream.ReferencePipeline.anyMatch(ReferencePipeline.java:449)</span></span><br><span class="line"><span class="keyword"></span>	<span class="built_in">at</span> com.veezean.skills.stream.StreamService.testHandleStreamAfterClosed(StreamService.<span class="keyword">java:153)</span></span><br><span class="line"><span class="keyword"></span>	<span class="built_in">at</span> com.veezean.skills.stream.StreamService.main(StreamService.<span class="keyword">java:176)</span></span><br><span class="line"><span class="keyword"></span>-----上面会报错-----</span><br></pre></td></tr></table></figure>
+
+<p>因为stream已经被执行<code>count()</code>终止方法了，所以对stream再执行<code>anyMatch</code>方法的时候，就会报错<code>stream has already been operated upon or closed</code>，这一点在使用的时候需要特别注意。</p>
+<hr>
+<h3 id="结果收集终止方法"><a href="#结果收集终止方法" class="headerlink" title="结果收集终止方法"></a>结果收集终止方法</h3><p>因为Stream主要用于对集合数据的处理场景，所以除了上面几种获取简单结果的终止方法之外，更多的场景是获取一个集合类的结果对象，比如List、Set或者HashMap等。</p>
+<p>这里就需要<code>collect</code>方法出场了，它可以支持生成如下类型的结果数据：</p>
+<ul>
+<li>一个<code>集合类</code>，比如List、Set或者HashMap等</li>
+<li>StringBuilder对象，支持将多个<code>字符串进行拼接</code>处理并输出拼接后结果</li>
+<li>一个可以记录个数或者计算总和的对象（<code>数据批量运算统计</code>）</li>
+</ul>
+<hr>
+<h4 id="生成集合"><a href="#生成集合" class="headerlink" title="生成集合"></a>生成集合</h4><p>应该算是collect最常被使用到的一个场景了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testCollectStopOptions</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;Dept&gt; ids = Arrays.asList(<span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="number">17</span>), <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="number">22</span>), <span class="keyword">new</span> <span class="title class_">Dept</span>(<span class="number">23</span>));</span><br><span class="line">    <span class="comment">// collect成list</span></span><br><span class="line">    List&lt;Dept&gt; collectList = ids.stream().filter(dept -&gt; dept.getId() &gt; <span class="number">20</span>)</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">&quot;collectList:&quot;</span> + collectList);</span><br><span class="line">    <span class="comment">// collect成Set</span></span><br><span class="line">    Set&lt;Dept&gt; collectSet = ids.stream().filter(dept -&gt; dept.getId() &gt; <span class="number">20</span>)</span><br><span class="line">            .collect(Collectors.toSet());</span><br><span class="line">    System.out.println(<span class="string">&quot;collectSet:&quot;</span> + collectSet);</span><br><span class="line">    <span class="comment">// collect成HashMap，key为id，value为Dept对象</span></span><br><span class="line">    Map&lt;Integer, Dept&gt; collectMap = ids.stream().filter(dept -&gt; dept.getId() &gt; <span class="number">20</span>)</span><br><span class="line">            .collect(Collectors.toMap(Dept::getId, dept -&gt; dept));</span><br><span class="line">    System.out.println(<span class="string">&quot;collectMap:&quot;</span> + collectMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">collectList:[Dept&#123;<span class="built_in">id</span>=22&#125;, Dept&#123;<span class="built_in">id</span>=23&#125;]</span><br><span class="line">collectSet:[Dept&#123;<span class="built_in">id</span>=23&#125;, Dept&#123;<span class="built_in">id</span>=22&#125;]</span><br><span class="line">collectMap:&#123;22=Dept&#123;<span class="built_in">id</span>=22&#125;, 23=Dept&#123;<span class="built_in">id</span>=23&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="生成拼接字符串"><a href="#生成拼接字符串" class="headerlink" title="生成拼接字符串"></a>生成拼接字符串</h4><p><strong>将一个List或者数组中的值拼接到一个字符串里并以逗号分隔开</strong>，这个场景相信大家都不陌生吧？</p>
+<p>如果通过<code>for</code>循环和<code>StringBuilder</code>去循环拼接，还得考虑下最后一个逗号如何处理的问题，很繁琐:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testForJoinStrings</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>, <span class="string">&quot;10&quot;</span>, <span class="string">&quot;308&quot;</span>, <span class="string">&quot;49&quot;</span>, <span class="string">&quot;627&quot;</span>, <span class="string">&quot;193&quot;</span>, <span class="string">&quot;111&quot;</span>, <span class="string">&quot;193&quot;</span>);</span><br><span class="line">    <span class="type">StringBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">    <span class="keyword">for</span> (String id : ids) &#123;</span><br><span class="line">        builder.append(id).append(<span class="string">&#x27;,&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 去掉末尾多拼接的逗号</span></span><br><span class="line">    builder.deleteCharAt(builder.length() - <span class="number">1</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;拼接后：&quot;</span> + builder.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是现在有了Stream，使用<code>collect</code>可以轻而易举的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testCollectJoinStrings</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;String&gt; ids = Arrays.asList(<span class="string">&quot;205&quot;</span>, <span class="string">&quot;10&quot;</span>, <span class="string">&quot;308&quot;</span>, <span class="string">&quot;49&quot;</span>, <span class="string">&quot;627&quot;</span>, <span class="string">&quot;193&quot;</span>, <span class="string">&quot;111&quot;</span>, <span class="string">&quot;193&quot;</span>);</span><br><span class="line">    <span class="type">String</span> <span class="variable">joinResult</span> <span class="operator">=</span> ids.stream().collect(Collectors.joining(<span class="string">&quot;,&quot;</span>));</span><br><span class="line">    System.out.println(<span class="string">&quot;拼接后：&quot;</span> + joinResult);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两种方式都可以得到完全相同的结果，但Stream的方式更优雅：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">拼接后：205,10,308,49,627,193,111,193</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="数据批量数学运算"><a href="#数据批量数学运算" class="headerlink" title="数据批量数学运算"></a>数据批量数学运算</h4><p>还有一种场景，实际使用的时候可能会比较少，就是使用collect生成数字数据的总和信息，也可以了解下实现方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testNumberCalculate</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;Integer&gt; ids = Arrays.asList(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>);</span><br><span class="line">    <span class="comment">// 计算平均值</span></span><br><span class="line">    <span class="type">Double</span> <span class="variable">average</span> <span class="operator">=</span> ids.stream().collect(Collectors.averagingInt(value -&gt; value));</span><br><span class="line">    System.out.println(<span class="string">&quot;平均值：&quot;</span> + average);</span><br><span class="line">    <span class="comment">// 数据统计信息</span></span><br><span class="line">    <span class="type">IntSummaryStatistics</span> <span class="variable">summary</span> <span class="operator">=</span> ids.stream().collect(Collectors.summarizingInt(value -&gt; value));</span><br><span class="line">    System.out.println(<span class="string">&quot;数据统计信息： &quot;</span> + summary);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中，使用collect方法来对list中元素值进行数学运算，结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">平均值：<span class="number">30.0</span></span><br><span class="line">总和： IntSummaryStatistics&#123;count=<span class="number">5</span>, <span class="built_in">sum</span>=<span class="number">150</span>, <span class="built_in">min</span>=<span class="number">10</span>, average=<span class="number">30.000000</span>, <span class="built_in">max</span>=<span class="number">50</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="并行Stream"><a href="#并行Stream" class="headerlink" title="并行Stream"></a>并行Stream</h2><h3 id="机制说明"><a href="#机制说明" class="headerlink" title="机制说明"></a>机制说明</h3><p>使用并行流，可以有效利用计算机的多CPU硬件，提升逻辑的执行速度。并行流通过将一整个stream划分为<code>多个片段</code>，然后对各个分片流并行执行处理逻辑，最后将各个分片流的执行结果汇总为一个整体流。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pics.codingcoder.cn/pics/202207102118100.png" alt="img"></p>
+<h3 id="约束与限制"><a href="#约束与限制" class="headerlink" title="约束与限制"></a>约束与限制</h3><p>并行流类似于多线程在并行处理，所以与多线程场景相关的一些问题同样会存在，比如死锁等问题，所以在并行流终止执行的函数逻辑，必须要保证<strong>线程安全</strong>。</p>
+<hr>
+<h2 id="回答最初的问题"><a href="#回答最初的问题" class="headerlink" title="回答最初的问题"></a>回答最初的问题</h2><p>到这里，关于JAVA Stream的相关概念与用法介绍，基本就讲完了。我们再把焦点切回本文刚开始时提及的一个问题：</p>
+<p><strong>Stream相较于传统的foreach的方式处理stream，到底有啥优势</strong>？</p>
+<p>根据前面的介绍，我们应该可以得出如下几点答案：</p>
+<ul>
+<li><strong>代码更简洁</strong>、偏声明式的编码风格，更容易体现出代码的逻辑意图</li>
+<li><strong>逻辑间解耦</strong>，一个stream中间处理逻辑，无需关注上游与下游的内容，只需要按约定实现自身逻辑即可</li>
+<li>并行流场景<strong>效率</strong>会比迭代器逐个循环更高</li>
+<li>函数式接口，<strong>延迟执行</strong>的特性，中间管道操作不管有多少步骤都不会立即执行，只有遇到终止操作的时候才会开始执行，可以避免一些中间不必要的操作消耗</li>
+</ul>
+<p>当然了，Stream也不全是优点，在有些方面也有其弊端：</p>
+<ul>
+<li>代码调测debug不便</li>
+<li>程序员从历史写法切换到Stream时，需要一定的适应时间</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>好啦，关于JAVA Stream的理解要点与使用技能的阐述就先到这里啦。那通过上面的介绍，各位小伙伴们是否已经跃跃欲试了呢？快去项目中使用体验下吧！当然啦，如果有疑问，也欢迎找我一起探讨探讨咯。</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"></a><div class="post-copyright__author_name">GnaixEuy</div><div class="post-copyright__author_desc"></div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://blog.gnaixeuy.cn/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://blog.gnaixeuy.cn/2024/04/19/Stream流操作，让代码更加的优雅/')">Stream流操作，让代码更加的优雅</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/#about-reward" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://blog.gnaixeuy.cn/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Stream流操作，让代码更加的优雅&amp;url=https://blog.gnaixeuy.cn/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/&amp;pic=https://www.kantop.net/upload/2021/01-18/5206802749656920145.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.GnaixEuy.cn" target="_blank">GnaixEuy</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Java/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Java<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E6%B5%81%E6%93%8D%E4%BD%9C/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>流操作<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>基础语法<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://img2.baidu.com/it/u=2682372405,2726946175&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=603&amp;h=412" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/04/02/MarkDown%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%BD%BF%E7%94%A8/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img0.baidu.com/it/u=3180777723,1997882827&amp;fm=253&amp;fmt=auto&amp;app=120&amp;f=JPEG?w=800&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MarkDown的基本语法使用</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">开发、设计、哲学等</b>相关的问题和看法，还有<b style="color:#fff">日常生活</b>的<b style="color:#fff">分享记录</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn"><h1 class="author-info__name">GnaixEuy</h1><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/GnaixEuy" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="mailto:SGGHCJ@live.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a><a class="social-icon faa-parent animated-hover" href="tencent://Message/?Uin=1259409073&amp;amp;websiteName=local.edu.com:8888=&amp;amp;Menu=yes" target="_blank" title="QQ"><i class="anzhiyufont anzhiyu-icon-qq"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream%E5%88%9D%E7%9B%B8%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">Stream初相识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream%E6%96%B9%E6%B3%95%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">Stream方法使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#map%E4%B8%8EflatMap"><span class="toc-number">2.1.</span> <span class="toc-text">map与flatMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#peek%E5%92%8Cforeach%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">peek和foreach方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#filter%E3%80%81sorted%E3%80%81distinct%E3%80%81limit"><span class="toc-number">2.3.</span> <span class="toc-text">filter、sorted、distinct、limit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%BB%93%E6%9E%9C%E7%BB%88%E6%AD%A2%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">简单结果终止方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E6%94%B6%E9%9B%86%E7%BB%88%E6%AD%A2%E6%96%B9%E6%B3%95"><span class="toc-number">2.5.</span> <span class="toc-text">结果收集终止方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E9%9B%86%E5%90%88"><span class="toc-number">2.5.1.</span> <span class="toc-text">生成集合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E6%8B%BC%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.5.2.</span> <span class="toc-text">生成拼接字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%89%B9%E9%87%8F%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97"><span class="toc-number">2.5.3.</span> <span class="toc-text">数据批量数学运算</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8CStream"><span class="toc-number">3.</span> <span class="toc-text">并行Stream</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E"><span class="toc-number">3.1.</span> <span class="toc-text">机制说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%A6%E6%9D%9F%E4%B8%8E%E9%99%90%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">约束与限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E7%AD%94%E6%9C%80%E5%88%9D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">回答最初的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/" title="Stream流操作，让代码更加的优雅"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=2682372405,2726946175&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=603&amp;h=412" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Stream流操作，让代码更加的优雅"/></a><div class="content"><a class="title" href="/2024/04/19/Stream%E6%B5%81%E6%93%8D%E4%BD%9C%EF%BC%8C%E8%AE%A9%E4%BB%A3%E7%A0%81%E6%9B%B4%E5%8A%A0%E7%9A%84%E4%BC%98%E9%9B%85/" title="Stream流操作，让代码更加的优雅">Stream流操作，让代码更加的优雅</a><time datetime="2024-04-19T05:03:20.000Z" title="发表于 2024-04-19 13:03:20">2024-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/02/MarkDown%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%BD%BF%E7%94%A8/" title="MarkDown的基本语法使用"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img0.baidu.com/it/u=3180777723,1997882827&amp;fm=253&amp;fmt=auto&amp;app=120&amp;f=JPEG?w=800&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MarkDown的基本语法使用"/></a><div class="content"><a class="title" href="/2024/04/02/MarkDown%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95%E4%BD%BF%E7%94%A8/" title="MarkDown的基本语法使用">MarkDown的基本语法使用</a><time datetime="2024-04-02T05:11:29.000Z" title="发表于 2024-04-02 13:11:29">2024-04-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/31/hello-world/" title="Hello World"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=1552001721,2212098250&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=587&amp;h=289" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2024/03/31/hello-world/" title="Hello World">Hello World</a><time datetime="2024-03-31T11:29:52.170Z" title="发表于 2024-03-31 19:29:52">2024-03-31</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="footer_deal"><a class="deal_link" href="mailto:sgghcj@live.com" title="email"><i class="anzhiyufont anzhiyufont anzhiyu-icon-envelope"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://weibo.com/u/5442690682" title="微博"><i class="anzhiyufont anzhiyufont anzhiyu-icon-weibo"></i></a><img class="footer_mini_logo" title="返回顶部" alt="返回顶部" onclick="anzhiyu.scrollToDest(0, 500)" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" size="50px"/><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/GnaixEuy" title="Github"><i class="anzhiyufont anzhiyufont anzhiyu-icon-github"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAAT618N_R7izb2I5l2_WttZilpct9ZSdgngSzsQSLvMWE" title="抖音"><i class="anzhiyufont anzhiyufont anzhiyu-icon-tiktok"></i></a></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2024 By <a class="footer-bar-link" href="/" title="GnaixEuy" target="_blank">GnaixEuy</a></div></div><div id="footer-type-tips"></div><div class="js-pjax"><script>function subtitleType () {
+  if (true) { 
+    window.typed = new Typed("#footer-type-tips", {
+      strings: ["求知若饥&#44; 虚心若愚.","生活明朗&#44; 万物可爱&#44; 人间值得&#44; 未来可期."],
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50
+    })
+  } else {
+    document.getElementById("footer-type-tips").innerHTML = '求知若饥&#44; 虚心若愚.'
+  }
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.cbd.int/typed.js@2.1.0/dist/typed.umd.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}</script></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn" title="更多">更多</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">2</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Java/" style="font-size: 0.88rem;">Java<sup>1</sup></a><a href="/tags/markdown/" style="font-size: 0.88rem;">markdown<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 0.88rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" style="font-size: 0.88rem;">基础语法<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 0.88rem;">快速录入<sup>1</sup></a><a href="/tags/%E6%B5%81%E6%93%8D%E4%BD%9C/" style="font-size: 0.88rem;">流操作<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="6703724141" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=6703724141&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>var meting_api = "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://gnaixeuy-twikoo.hf.space',
+      region: '',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://gnaixeuy-twikoo.hf.space',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://gnaixeuy-twikoo.hf.space',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.cbd.int/twikoo@1.6.25/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'><div class='name'><span>${array[i].nick} </span></div></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom && ($dom.innerHTML= result)
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
