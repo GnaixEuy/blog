@@ -143,7 +143,23 @@ function showWelcome() {
                     posdesc = '蚌埠住了，芜湖起飞';
                     break;
                 case '福建省':
-                    posdesc = '井邑白云间，岩城远带山';
+                    switch (ipLocation.result.ad_info.city) {
+                        case '厦门市':
+                            posdesc = '词碧海潮生厦门城, 翠岛花开满眼明';
+                            break;
+                        case '福州市':
+                            posdesc = '万里重山绕福州,南横一道见溪流';
+                            break;
+                        case '莆田市':
+                            posdesc = '度水红蜻蜓，傍人飞款款';
+                            break;
+                        case '泉州市':
+                            posdesc = '山水如诗画,古邑泉州城';
+                            break;
+                        default:
+                            posdesc = '井邑白云间，岩城远带山';
+                            break;
+                    }
                     break;
                 case '江西省':
                     posdesc = '落霞与孤鹜齐飞，秋水共长天一色';
