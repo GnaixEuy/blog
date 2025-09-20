@@ -1,0 +1,586 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>AVA技术-JVM入门，看这一篇就够了！ | GnaixEuy</title><meta name="keywords" content="JVM,JAVA 虚拟机,转载,类加载,双亲委派机制"><meta name="author" content="GnaixEuy"><meta name="copyright" content="GnaixEuy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="AVA技术-JVM入门，看这一篇就够了！"><meta name="application-name" content="AVA技术-JVM入门，看这一篇就够了！"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="AVA技术-JVM入门，看这一篇就够了！"><meta property="og:url" content="https://blog.gnaixeuy.cn/2025/09/20/JAVA技术-JVM入门，看这一篇就够了！/index.html"><meta property="og:site_name" content="GnaixEuy"><meta property="og:description" content="什么是JVM？JVM(Java Virtual Machine,Java虚拟机），是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机平台(操作系统)上仿真模拟各种计算机功能来实现的。引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。 Java语言使用Jav"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318"><meta property="article:author" content="GnaixEuy"><meta property="article:tag" content=""><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318"><meta name="description" content="什么是JVM？JVM(Java Virtual Machine,Java虚拟机），是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机平台(操作系统)上仿真模拟各种计算机功能来实现的。引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。 Java语言使用Jav"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.gnaixeuy.cn/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?9fa37e20a4e6ec67fdadd6ed780aaa48";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  linkPageTop: {"enable":true,"title":"与数百名博主无限进步","addFriendPlaceholder":"昵称（请勿包含博客等字样）：\n网站地址（要求博客地址，请勿提交个人主页）：\n头像图片url（请提供尽可能清晰的图片）：\n描述：\n站点截图（可选）：\n"},
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: {"enable":true,"ck":"3FHqfUkvR1jefQRq","LingQueMonitorID":"3FHrKK2VGfLWEyVR"},
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://twikoo-khaki-delta.vercel.app',
+  commentBarrageConfig:{"enable":true,"maxBarrage":1,"barrageTime":4000,"accessToken":"fa8f3dc11c754b8e8cdf5e155e9a609e","mailMd5":"92FDB7007FFBA99F4348CBC63FB0813B"},
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: {"apiurl":"https://home.gnaixeuy.cn:8043/"},
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 团队小组发动机","🏃 脚踏实地行动派","🧱 Vim综合症重度患者","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":true,"limitCount":50,"languages":{"author":"作者: GnaixEuy","link":"链接: ","source":"来源: GnaixEuy","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'GnaixEuy',
+  title: 'AVA技术-JVM入门，看这一篇就够了！',
+  postAI: '',
+  pageFillDescription: '什么是JVM？, JVM的基础概念, JVM内存布局总览, 堆(Heap), 虚拟机栈(VM Stack), 本地方法栈(Native Method Stack), (Program Counter Register), (Execution Engine), 本地库接口(Native Interface), 本地方法库(Native Libary), 类加载器, 垃圾回收器, 双亲委派模型什么是虚拟机是一种用于计算设备的规范它是一个虚构出来的计算机是通过在实际的计算机平台操作系统上仿真模拟各种计算机功能来实现的引入语言虚拟机后语言在不同平台上运行时不需要重新编译语言使用虚拟机屏蔽了与具体平台相关的信息使得语言编译程序只需生成在虚拟机上运行的目标代码字节码文件就可以在多种平台上不加修改地运行虚拟机在执行字节码时把字节码解释成具体平台上的机器指令执行这就是能够一次编译到处运行的原因的平台定位的基础概念内存布局总览内存布局总览堆堆内存结构堆是中内存分配最大的一块区域被分为为新生代老年代元空间以前叫方法区或者永久代新生代新生代区域是类和对象的创建成长销毁的主要区域又被细分为区和两个幸存区和和幸存区的默认比例是所有的类对象都是在区被出来的当区的空间用完但程序又需要创建对象的垃圾回收器将对区进行垃圾回收将其中不再被其他对象所引用的对象进行销毁涉及到一些判断算法如可达性分析引用计数等然后将中的剩余对象移动到幸存区若幸存区也满了则启动垃圾回收算法对该区进行垃圾回收然后移动到幸存区如果幸存区也满了再移动到老年代区新生代采用的内存回收方式是轻老年代老年代中存放的对象是存活了很久的年龄大于的对象在老年代触发的叫也叫会包含年轻代的但老年代只要执行就一定是采用的是标记清除算法会产生内存碎片在执行的情况下会阻塞程序的正常运行也就是现象老年代的比年轻代的效率上慢倍以上对应用程序运行效率有很大的影响元空间介绍元空间之前先说一下永久代永久代是虚拟机也就是我们使用的虚拟机的特有的概念他不属于堆内存是方法区的一种实现各大厂商对方法区有各自的实现永久代存放运行时需要的类包含库的类和方法在触发的情况下永久代也会被进行垃圾回收永久代的内存溢出也就是元空间是在的时候移除了永久代的概念元空间也是对虚拟机的方法区的一种实现元空间与永久代最大的区别在于元空间不在虚拟机中使用本地内存通过配置如下参数可以更改元空间的大小初始空间的大小达到该值就会触发垃圾收集进行类型卸载同时会对该值进行调整如果释放了大量的空间就适当降低该值如果释放了很少的空间那么在不超过时适当提高该值最大空间默认是没有限制的永久代的回收会随着进行移动消耗性能每种类型的垃圾回收都需要特殊处理元数据将元数据剥离出来简化了垃圾收集提高了效率初学者可能会奇怪为啥堆中还细分了这么多内存区域新生代空间要划分这么细其实如果我们了解了的垃圾收集机制就会佩服的研发设计人员了首先堆中划分了新生代和老年代是为了垃圾回收效率更快新生代中的对象存活期一般不长存在的对象是死亡非常快的存在朝生夕死的情况而老年代中的对象存活期较长所以当垃圾回收器回收内存时新生代中垃圾回收效果较好会回收大量的内存而老年代中回收效果较差内存回收不会太多其次基于对象生命存活期性质的不同新生代区域中一般采用复制算法因为存活下来的对象是少数所需要复制的对象少而老年代对象存活多不适合采用复制算法一般是标记整理和标记清除算法针对每个算法的介绍本篇暂不涉及后续会出一篇专门的文章来说明因为采用的复制算法需要留出一块单独的内存空间来以备垃圾回收时复制对象使用所以将新生代分为区和两个区和每次使用和一个区另一个作为备用的对象复制内存区一个实例只存在一个堆内存空间堆的大小可以固定也可以扩大和缩小支持通过下面的配置项动态调整堆中不同内存区域内存分配比例运行时堆的大小堆的最小值堆空间的最大值新生代堆空间大小调整新生代的最小值新生代的最大值设置新生代与老年代在堆空间的大小新生代中所占区域的大小永久代大小调整其他设置将新生代对象转到老年代时需要经过多少次垃圾回收但是仍然没有被回收堆的内存不需要是连续空间其内存是没有限制的但是会受限于机器内存配置如果超过机器最大内存限制会抛出异常虚拟机栈虚拟机栈描述的是方法执行的内存模型每个方法执行的同时会创建一个栈帧该方法从调用开始至执行结束的过程都对应着一个栈帧在虚拟机栈里面从入栈到出栈的过程虚拟机栈也是线程私有的它的生命周期与线程相同随线程而生随线程而灭栈是一种先进后出的数据结构所以虚拟机栈他只会先处理位于栈顶的栈帧而位于栈底的栈帧也就是最先入栈的栈帧只会等待其上面的栈帧处理完毕了才会被处理虚拟机栈内部划分了几个部分局部变量表操作数栈动态连接方法出口返回地址虚拟机栈内部划分对于我们来说主要关注的栈内存就是虚拟机栈中局部变量表部分虚拟机栈中的异常如果线程请求的栈深度大于虚拟机所允许的深度将抛出异常如果虚拟机栈可以动态扩展如果扩展时无法申请到足够的内存就会抛出异常当前大部分都可以动态扩展只不过规范也允许固定长度的虚拟机栈本地方法栈本地方法栈和虚拟机栈所发挥的作用是非常相似的其区别就是虚拟机栈为虚拟机执行方法也就是字节码服务本地方法栈则是为虚拟机使用到的本地方法服务与虚拟机栈一样本地方法栈也会在栈深度溢出或者栈扩展失败时分别抛出和异常程序计数器程序计数器是中一块很小的内存空间几乎可以忽略不计是运行速度最快的存储区域也是唯一一个在虚拟机规范中没有被规定任何情况的区域在规范中每个线程都有它的程序计数器是线程私有的生命周期与线程的生命周期保持一致程序计数器会存储当前线程正在执行的方法指令地址如果是执行方法则是未指定值程序控制流的指示器分支循环跳转异常处理线程恢复等基础功能都需要依赖这个计数器来完成字节码解释器工作时是通过改变这个程序计数器的值来读取下一条需要执行的字节码指令执行引擎执行引擎是虚拟机核心的组成部分之一它的任务就是将字节码指令解释编译为对应平台上的本地机器指令才可以简单来说中的执行引擎充当了将高级语言翻译为机器语言的译者字节码的执行是由执行引擎来完成流程图如下所示字节码的执行本地库接口本地方法库首先说明什么是本地方法简单地讲一个就是一个调用非代码的接口在定义一个时并不提供实现体有些像定义一个因为其实现体是由非语言在外面实现的本地方法库就是本地方法的集合类加载器开发人员核心工作是创造源代码在中源代码文件的格式是编写好的源代码文件经过编译器如调用编译后会生成对应的文件类加载器会负责将文件加载到内存中只要文件结构符合格式要求即可类加载器不负责运行运行是由执行引擎来实现的一句话概括我们所讲的类加载器就是负责把源代码编译后的文件加载到虚拟机内存中并生成类的一个实例先来看一段源码应用程序类加载器扩展类加载器启动类加载器运行结果上述示例代码按层次关系输出了对应的类加载器对象信息但是扩展类加载器的加载器为啥是而不是一个启动类加载器么其实是因为是由编写的它本身是虚拟机的一部分所以它并不是一个类也就是无法在代码中获取它的引用启动时通过类加载器加载等核心包中的文件比如都是由它加载类加载器通过树状方式组织起来形成树状结构树的根节点就是引导类加载器下图中给出了一个典型的类加载器树状组织结构示意图其中的箭头指向的是父类加载器类加载器继承关系涉及的类加载器分别介绍如下启动类加载器引导类加载器启动类加载器启动类加载器使用语言实现的嵌套在内部它用来加载的核心库或路径下的内容用于提供自身需要的类它并不继承自没有父加载器加载扩展类加载器和应用程序类加载器并指定为他们的父类加载器出于安全考虑启动类加载器只加载包名为等开头的类扩展类加载器扩展类加载器语言编写由实现之后改成由实现派生于类父类加载器为启动类加载器从系统属性所指定的目录中加载类库或从的安装目录的子目录扩展目录下加载类库如果用户创建的放在此目录下也会自动由扩展类加载器加载应用程序类加载器系统类加载器应用程序类加载器语言编写由实现派生于类父类加载器为扩展类加载器它负责加载环境变量或系统属性指定路径下的类库该类加载是程序中默认的类加载器一般来说应用的类都是由它来完成加载通过方法可以获取到该类加载器用户自定义类加载器用户自定义类加载器在的日常应用程序开发中类的加载几乎是由上述种类加载器相互配合执行的在必要时我们还可以自定义类加载器来定制类的加载方式为什么要自定义类加载器隔离加载类修改类加载的方式扩展加载源防止源码泄漏垃圾回收器双亲委派模型如果一个类加载器收到了类加载的请求它首先不会自己去尝试加载这个类而是把这个请求委派给父类加载器去完成每一个层次的类加载器都是如此因此所有的加载请求最终都应该传送到最顶层的启动类加载器中只有当上一层类加载器反馈自己无法完成这个加载请求它的搜索范围中没有找到这个类时下一层类加载器才会尝试自己去加载还是拿前面提到过的源代码程序举例加载时调用类加载器的顺序是下面这样的类加载时调用类加载器的顺序要进行加载时它将会启动应用类加载器进行加载类但是这个系统类加载器不会真正去加载他而是会调用看是否有父加载器结果有是扩展类加载器扩展类加载器也不会直接去加载它看自己是否有父加载器没结果它还是有的是根类加载器所以这个时候根类加载器就去加载这个类可在下它找不到这个类所以他告诉他的子类加载器我找不到你去加载吧子类扩展类加载器去去找也找不着它告诉它的子类加载器类加载器我找不到这个类你去加载吧结果类加载器找到了就加到内存中并生成对象这个时间时候启动类加载器应用类加载器和实际类加载器应用类加载器是同一个针对类的加载原理其实就是中著名的委托加载机制双亲委派模型那么有童鞋会奇怪这不是多余吗直接加载不就完事了么为啥还多这么多传递判断呢这里需要先说明一下虚拟机是如何判定两个类是相同的不仅要看类的全名是否相同还要看加载此类的类加载器是否一样只有两者都相同的情况才认为两个类是相同的即便是同样的字节代码被不同的类加载器加载之后所得到的类也是不同的双亲委派模型其实是为了保证核心库的类型安全所有应用都至少需要引用类也就是说在运行的时候这个类需要被加载到虚拟机中如果这个加载过程由应用自己的类加载器来完成的话很可能就存在多个版本的类而且这些类之间是不兼容的这里总结一下双亲委派模型的设计动机代理模式是为了保证核心库的类型安全通过代理模式对于核心库的类的加载工作由引导类加载器来统一完成保证了应用所使用的都是同一个版本的核心库的类是互相兼容的相同名称的类可以并存在虚拟机中不同的类加载器为相同名称的类创建了额外的名称空间相同名称的类可以并存在虚拟机中只需要用不同的类加载器来加载它们即可不同类加载器加载的类之间是不兼容的这就相当于在虚拟机内部创建了一个个相互隔离的类空间双亲委派模型这种技术思想在许多框架中都被用到比如以来说容器不希望它下面的之间能互相访问到每个应用都有一个对应的类加载器实例双亲委派模型可以被打破需要自定义类加载器继承类重写方法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-09-20 17:52:43',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/css/welcome.css?1"><meta name="generator" content="Hexo 7.1.1"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://status.gnaixeuy.cn/" title="站点运行监测"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=2581151693,3957058994&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=500" alt="站点运行监测"/><span class="back-menu-item-text">站点运行监测</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://xxqg.gnaixeuy.cn:7452" title="爱国学习平台"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://5b0988e595225.cdn.sohucs.com/images/20180119/c70a9faedafc4520b347381b18a54fc8.jpeg" alt="爱国学习平台"/><span class="back-menu-item-text">爱国学习平台</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">GnaixEuy</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 小伙伴们</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/CLI/" style="font-size: 1.05rem;">CLI<sup>1</sup></a><a href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 1.05rem;">JAVA 虚拟机<sup>1</sup></a><a href="/tags/JVM/" style="font-size: 1.05rem;">JVM<sup>1</sup></a><a href="/tags/Jetbrains/" style="font-size: 1.05rem;">Jetbrains<sup>1</sup></a><a href="/tags/Kubernetes/" style="font-size: 1.05rem;">Kubernetes<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>2</sup></a><a href="/tags/RBAC/" style="font-size: 1.05rem;">RBAC<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 1.05rem;">Spring<sup>1</sup></a><a href="/tags/grpc/" style="font-size: 1.05rem;">grpc<sup>1</sup></a><a href="/tags/istio/" style="font-size: 1.05rem;">istio<sup>1</sup></a><a href="/tags/k8s/" style="font-size: 1.05rem;">k8s<sup>1</sup></a><a href="/tags/k8s-Dashboard/" style="font-size: 1.05rem;">k8s Dashboard<sup>1</sup></a><a href="/tags/kubeSphere/" style="font-size: 1.05rem;">kubeSphere<sup>1</sup></a><a href="/tags/kubernetes/" style="font-size: 1.05rem;">kubernetes<sup>1</sup></a><a href="/tags/macOS/" style="font-size: 1.05rem;">macOS<sup>3</sup></a><a href="/tags/markdown/" style="font-size: 1.05rem;">markdown<sup>1</sup></a><a href="/tags/rancher/" style="font-size: 1.05rem;">rancher<sup>1</sup></a><a href="/tags/spring-cloud/" style="font-size: 1.05rem;">spring cloud<sup>1</sup></a><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 1.05rem;">云原生<sup>1</sup></a><a href="/tags/%E4%BE%BF%E6%8D%B7%E6%93%8D%E4%BD%9C/" style="font-size: 1.05rem;">便捷操作<sup>1</sup></a><a href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" style="font-size: 1.05rem;">双亲委派机制<sup>1</sup></a><a href="/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/" style="font-size: 1.05rem;">命令行操作<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/" style="font-size: 1.05rem;">基本指令<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 1.05rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.05rem;">学习笔记<sup>1</sup></a><a href="/tags/%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86/" style="font-size: 1.05rem;">容器管理<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91/" style="font-size: 1.05rem;">开发<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7/" style="font-size: 1.05rem;">开发技巧<sup>3</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 1.05rem;">微服务<sup>1</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/" style="font-size: 1.05rem;">微服务架构<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 1.05rem;">快速录入<sup>2</sup></a><a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4/" style="font-size: 1.05rem;">操作系统命令<sup>1</sup></a><a href="/tags/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" style="font-size: 1.05rem;">权限控制<sup>1</sup></a><a href="/tags/%E7%90%86%E8%AE%BA%E6%A6%82%E8%BF%B0/" style="font-size: 1.05rem;">理论概述<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E8%A7%92%E8%89%B2/" style="font-size: 1.05rem;">角色<sup>1</sup></a><a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 1.05rem;">转载<sup>4</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 1.05rem;">运维<sup>1</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5/" style="font-size: 1.05rem;">运维实践<sup>1</sup></a><a href="/tags/%E9%89%B4%E6%9D%83/" style="font-size: 1.05rem;">鉴权<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/09/"><span class="card-archive-list-date">九月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/07/"><span class="card-archive-list-date">七月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/06/"><span class="card-archive-list-date">六月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/05/"><span class="card-archive-list-date">五月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/02/"><span class="card-archive-list-date">二月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">十月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">九月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">转载</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/JVM/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>JVM</span></a><a class="article-meta__tags" href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>JAVA 虚拟机</span></a><a class="article-meta__tags" href="/tags/%E8%BD%AC%E8%BD%BD/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>转载</span></a><a class="article-meta__tags" href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>类加载</span></a><a class="article-meta__tags" href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>双亲委派机制</span></a></span></div></div><h1 class="post-title" itemprop="name headline">AVA技术-JVM入门，看这一篇就够了！</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-09-20T09:48:35.000Z" title="发表于 2025-09-20 17:48:35">2025-09-20</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-09-20T09:52:43.310Z" title="更新于 2025-09-20 17:52:43">2025-09-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">4.7k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="AVA技术-JVM入门，看这一篇就够了！"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为厦门"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>厦门</span><span class="post-meta-separator"></span><span class="post-meta-commentcount"><i class="anzhiyufont anzhiyu-icon-comments post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/#post-comment" tabindex="-1"><span id="twikoo-count"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://zhuanlan.zhihu.com/p/649147464"><header><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a><a href="/tags/JVM/" tabindex="-1" itemprop="url">JVM</a><a href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" tabindex="-1" itemprop="url">JAVA 虚拟机</a><a href="/tags/%E8%BD%AC%E8%BD%BD/" tabindex="-1" itemprop="url">转载</a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" tabindex="-1" itemprop="url">类加载</a><a href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" tabindex="-1" itemprop="url">双亲委派机制</a><h1 id="CrawlerTitle" itemprop="name headline">AVA技术-JVM入门，看这一篇就够了！</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">代码小郭</span><time itemprop="dateCreated datePublished" datetime="2025-09-20T09:48:35.000Z" title="发表于 2025-09-20 17:48:35">2025-09-20</time><time itemprop="dateCreated datePublished" datetime="2025-09-20T09:52:43.310Z" title="更新于 2025-09-20 17:52:43">2025-09-20</time></header><h2 id="什么是JVM？"><a href="#什么是JVM？" class="headerlink" title="什么是JVM？"></a>什么是JVM？</h2><p>JVM(Java Virtual Machine,Java虚拟机），是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机平台(操作系统)上仿真模拟各种计算机功能来实现的。引入Java语言虚拟机后，Java语言在不同平台上运行时不需要重新编译。</p>
+<p>Java语言使用Java虚拟机屏蔽了与具体平台相关的信息，使得Java语言编译程序只需生成在Java虚拟机上运行的目标代码（字节码class文件），就可以在多种平台上不加修改地运行。Java虚拟机在执行字节码时，把字节码解释成具体平台上的机器指令执行。这就是Java能够“一次编译，到处运行”的原因。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic2.zhimg.com/v2-e958fba596e0232bd3468cce56edaf11_1440w.jpg" alt="img"></p>
+<p>JVM的平台定位</p>
+<h2 id="JVM的基础概念"><a href="#JVM的基础概念" class="headerlink" title="JVM的基础概念"></a>JVM的基础概念</h2><h3 id="JVM内存布局总览"><a href="#JVM内存布局总览" class="headerlink" title="JVM内存布局总览"></a>JVM内存布局总览</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic4.zhimg.com/v2-8aba35752a3d84146c3c5e4e251db6c3_1440w.jpg" alt="img"></p>
+<p>JVM内存布局总览</p>
+<h3 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆(Heap)"></a>堆(Heap)</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-f56f9aaa18997a97bfc5b388b9dbf046_1440w.jpg" alt="img"></p>
+<p>堆内存结构</p>
+<p>堆是JVM中内存分配最大的一块区域，被分为为<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=232384959&content_type=Article&match_order=1&q=%E6%96%B0%E7%94%9F%E4%BB%A3&zhida_source=entity">新生代</a>、<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=232384959&content_type=Article&match_order=1&q=%E8%80%81%E5%B9%B4%E4%BB%A3&zhida_source=entity">老年代</a>、<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=232384959&content_type=Article&match_order=1&q=%E5%85%83%E7%A9%BA%E9%97%B4&zhida_source=entity">元空间</a>(1.8以前叫方法区或者永久代)：</p>
+<ul>
+<li>新生代 新生代区域是类和对象的创建、成长、销毁的主要区域，又被细分为Eden区和两个幸存区(S0和S1)，eden和幸存区的默认比例是8:1:1，所有的类对象都是在Eden区被new出来的。 当Eden区的空间用完但程序又需要创建对象，JVM的垃圾回收器将对Eden区进行垃圾回收，将其中不再被其他对象所引用的对象进行销毁(涉及到一些判断算法如可达性分析、引用计数等)，然后将Eden中的剩余对象移动到幸存0区。 若幸存0区也满了，则启动垃圾回收算法对该区进行垃圾回收，然后移动到幸存1区。如果幸存1区也满了再移动到老年代区。</li>
+</ul>
+<p>新生代采用的内存回收方式是轻GC（YoungGC）。 - 老年代 老年代中存放的对象是存活了很久的，年龄大于15的对象。在老年代触发的gc叫major gc也叫full gc。full gc会包含年轻代的gc，但老年代只要执行gc就一定是full gc。</p>
+<p>full gc采用的是标记-清除算法，会产生内存碎片。在执行full gc的情况下，会阻塞程序的正常运行，也就是STW现象(Stop The World)。</p>
+<p>老年代的gc比年轻代的gc效率上慢10倍以上，对应用程序运行效率有很大的影响。</p>
+<ul>
+<li>元空间<br>介绍元空间之前先说一下永久代：永久代是hotspot虚拟机，也就是我们使用的java虚拟机的特有的概念，他不属于堆内存，是方法区的一种实现，各大厂商对方法区有各自的实现。永久代存放jvm运行时，需要的类，包含java库的类和方法，在触发full gc的情况下，永久代也会被进行垃圾回收。永久代的内存溢出也就是 pergen space。</li>
+</ul>
+<p>元空间是metaspace，在jdk1.8的时候，jvm移除了永久代的概念，元空间也是对java虚拟机的方法区的一种实现。元空间与永久代最大的区别在于，元空间不在虚拟机中，使用本地内存。通过配置如下参数可以更改元空间的大小。 -XX:MetaspaceSize：初始空间的大小。达到该值就会触发垃圾收集进行类型卸载，同时GC会对该值进行调整：如果释放了大量的空间，就适当降低该值；如果释放了很少的空间，那么在不超过MaxMetaspaceSize时，适当提高该值。 -XX:MaxMetaspaceSize，最大空间，默认是没有限制的。 永久代的回收会随着full gc进行移动，消耗性能。每种类型的垃圾回收都需要特殊处理元数据。将元数据剥离出来，简化了垃圾收集，提高了效率。</p>
+<hr>
+<p>初学者可能会奇怪，为啥堆中还细分了这么多内存区域？新生代空间要划分这么细？</p>
+<p>其实如果我们了解了JVM的垃圾收集机制，就会佩服JVM的研发设计人员了。</p>
+<p>首先，堆中划分了新生代和老年代是为了垃圾回收效率更快：新生代中的对象存活期一般不长，存在的对象是死亡非常快的，存在朝生夕死的情况。而老年代中的对象存活期较长，所以当垃圾回收器回收内存时，新生代中垃圾回收效果较好，会回收大量的内存，而老年代中回收效果较差，内存回收不会太多。</p>
+<p>其次，基于对象生命存活期性质的不同，新生代区域中一般采用复制算法，因为存活下来的对象是少数，所需要复制的对象少，而老年代对象存活多，不适合采用复制算法，一般是标记整理和标记清除算法。(针对每个算法的介绍本篇暂不涉及，后续会出一篇专门的文章来说明)。</p>
+<p>因为采用的复制算法需要留出一块单独的内存空间来以备垃圾回收时复制对象使用，所以将新生代分为eden区和两个survivor区(S0和S1)，每次使用eden和一个survivor区，另一个survivor作为备用的对象复制内存区。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picx.zhimg.com/v2-698e9d1f63feda7df17d84cbe7d0f49d_1440w.jpg" alt="img"></p>
+<hr>
+<p>一个JVM实例只存在一个堆内存空间，堆的大小可以固定，也可以扩大和缩小，JVM支持通过下面的配置项，动态调整堆中不同内存区域内存分配比例：</p>
+<ul>
+<li>1.JVM运行时堆的大小　　-Xms堆的最小值　　-Xmx堆空间的最大值</li>
+<li>2.新生代堆空间大小调整　　-XX:NewSize新生代的最小值　　-XX:MaxNewSize新生代的最大值　　 -XX:NewRatio设置新生代与老年代在堆空间的大小　　-XX:SurvivorRatio新生代中Eden所占区域的大小</li>
+<li>3.永久代大小调整　　-XX:MaxPermSize</li>
+<li>4.其他　 -XX:MaxTenuringThreshold,设置将新生代对象转到老年代时需要经过多少次垃圾回收，但是仍然没有被回收</li>
+</ul>
+<p>堆的内存不需要是连续空间，其内存是没有限制的，但是会受限于机器内存配置，如果超过机器最大内存限制，会抛出异常：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.OutOfMemoryError: Java heap space</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟机栈-VM-Stack"><a href="#虚拟机栈-VM-Stack" class="headerlink" title="虚拟机栈(VM Stack)"></a>虚拟机栈(VM Stack)</h3><p>Java虚拟机栈描述的是Java方法执行的内存模型：每个方法执行的同时会创建一个栈帧，该方法从调用开始至执行结束的过程，都对应着一个栈帧在虚拟机栈里面从入栈到出栈的过程。<br>Java虚拟机栈也是线程私有的，它的生命周期与线程相同（随线程而生，随线程而灭）。</p>
+<blockquote>
+<p>栈是一种先进后出的数据结构，所以Java虚拟机栈他只会先处理位于栈顶的栈帧，而位于栈底的栈帧(也就是最先入栈的栈帧)只会等待其上面的栈帧处理完毕了才会被处理。 Java虚拟机栈内部划分了几个部分： - 局部变量表 - 操作数栈 - 动态连接 - 方法出口(返回地址)</p>
+</blockquote>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-f0013b27f6db1ab96ed5f3a79651951e_1440w.jpg" alt="img"></p>
+<p>虚拟机栈内部划分</p>
+<p>对于我们来说，主要关注的stack栈内存，就是虚拟机栈中局部变量表部分。</p>
+<p>虚拟机栈中的异常：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1）如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverflowError异常；</span><br><span class="line">2）如果虚拟机栈可以动态扩展，如果扩展时无法申请到足够的内存，就会抛出OutOfMemoryError异常</span><br><span class="line">（当前大部分JVM都可以动态扩展，只不过JVM规范也允许固定长度的虚拟机栈）</span><br></pre></td></tr></table></figure>
+
+<h3 id="本地方法栈-Native-Method-Stack"><a href="#本地方法栈-Native-Method-Stack" class="headerlink" title="本地方法栈(Native Method Stack)"></a>本地方法栈(Native Method Stack)</h3><p>本地方法栈和java虚拟机栈所发挥的作用是非常相似的，其区别就是</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1）java虚拟机栈为虚拟机执行Java方法（也就是字节码）服务</span><br><span class="line">2）本地方法栈则是为虚拟机使用到的本地方法服务</span><br></pre></td></tr></table></figure>
+
+<p>与虚拟机栈一样，本地方法栈也会在栈深度溢出或者栈扩展失败时分别抛出StackOverflowError和OutOfMemoryError异常。</p>
+<h3 id="程序计数器-Program-Counter-Register"><a href="#程序计数器-Program-Counter-Register" class="headerlink" title="程序计数器(Program Counter Register)"></a><a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=232384959&content_type=Article&match_order=1&q=%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8&zhida_source=entity">程序计数器</a>(Program Counter Register)</h3><p>程序计数器是JVM中一块很小的内存空间，几乎可以忽略不计，是运行速度最快的存储区域，也是唯一一个在java虚拟机规范中没有被规定任何OutOfMemoryError(OOM)情况的区域。</p>
+<p>在JVM规范中，每个线程都有它的程序计数器，是线程私有的，生命周期与线程的生命周期保持一致。</p>
+<p>程序计数器会存储当前线程正在执行的Java方法JVM指令地址，如果是执行native方法，则是未指定值（undefined）。</p>
+<p>程序控制流的指示器，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。 字节码解释器工作时是通过改变这个程序计数器的值来读取下一条需要执行的字节码指令。</p>
+<h3 id="执行引擎-Execution-Engine"><a href="#执行引擎-Execution-Engine" class="headerlink" title="执行引擎(Execution Engine)"></a><a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=232384959&content_type=Article&match_order=1&q=%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E&zhida_source=entity">执行引擎</a>(Execution Engine)</h3><p>执行引擎（Execution Engine) 是 Java 虚拟机核心的组成部分之一，它的任务就是将字节码指令解释&#x2F;编译为对应平台上的本地机器指令才可以。简单来说，JVM 中的执行引擎充当了将高级语言翻译为机器语言的译者。</p>
+<p>Java 字节码的执行是由 JVM 执行引擎来完成，流程图如下所示：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-f0013b27f6db1ab96ed5f3a79651951e_1440w.jpg" alt="img"></p>
+<p>字节码的执行</p>
+<h3 id="本地库接口-Native-Interface"><a href="#本地库接口-Native-Interface" class="headerlink" title="本地库接口(Native Interface)"></a>本地库接口(Native Interface)</h3><h3 id="本地方法库-Native-Libary"><a href="#本地方法库-Native-Libary" class="headerlink" title="本地方法库(Native Libary)"></a>本地方法库(Native Libary)</h3><p>首先说明什么是本地方法：简单地讲，一个Native Method就 是一个Java调用非Java代码的接口。 在定义一个native method时，并不提供实现体(有些像定义一个Javainterface)，因为其实现体是由非java语言在外面实现的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyNatives</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">Native1</span><span class="params">(<span class="type">int</span> x)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">native</span> <span class="keyword">static</span> <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">Native2</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">native</span> <span class="keyword">synchronized</span> <span class="keyword">private</span> <span class="type">float</span> <span class="title function_">Native3</span><span class="params">(Object o)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本地方法库就是本地方法的集合。</p>
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><p>开发人员核心工作是创造源代码。在java中源代码文件的格式是xxx.java，编写好的源代码文件经过编译器(如IDEA、eclipse)调用javac编译后会生成对应的xxx.class文件，类加载器会负责将xxx.class文件加载到内存中，只要xxx.class文件结构符合格式要求即可，类加载器不负责运行，运行是由执行引擎Execution Engine来实现的。</p>
+<p>一句话概括：我们所讲的类加载器classLoader,就是负责把JAVA源代码编译后的.class文件 ，加载到JVM虚拟机内存中，并生成 java.lang.Class类的一个实例。</p>
+<p>先来看一段源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassLoaderTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> ClassLoaderTest.class.getClassLoader();</span><br><span class="line">        System.out.println(classLoader);<span class="comment">//应用程序类加载器</span></span><br><span class="line"></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader1</span> <span class="operator">=</span> classLoader.getParent();</span><br><span class="line">        System.out.println(classLoader1);<span class="comment">//扩展类加载器</span></span><br><span class="line"></span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader2</span> <span class="operator">=</span> classLoader1.getParent();</span><br><span class="line">        System.out.println(classLoader2);<span class="comment">//启动类加载器</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sun.misc.Launcher$AppClassLoader@18b4aac2</span><br><span class="line">sun.misc.Launcher$ExtClassLoader@677327b6</span><br><span class="line">null</span><br></pre></td></tr></table></figure>
+
+<p>上述示例代码按层次关系输出了对应的类加载器对象信息，但是扩展类加载器ExtClassLoader的parent加载器为啥是null而不是一个启动类加载器Bootstrap ClassLoader么？</p>
+<p>其实，是因为Bootstrap ClassLoader是由C&#x2F;C++编写的，它本身是虚拟机的一部分，所以它并不是一个JAVA类，也就是无法在java代码中获取它的引用 ，JVM启动时通过Bootstrap类加载器加载rt.jar等核心jar包中的class文件，比如int.class,String.class都是由它加载。</p>
+<p>类加载器通过树状方式组织起来，形成树状结构。树的根节点就是Bootstrap ClassLoader引导类加载器。下图中给出了一个典型的类加载器树状组织结构示意图，其中的箭头指向的是父类加载器。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-45e35176171698544dffb7f648f43140_1440w.jpg" alt="img"></p>
+<p>类加载器继承关系</p>
+<hr>
+<p>涉及的类加载器分别介绍如下：</p>
+<ul>
+<li>1）启动类加载器(引导类加载器，Bootstrap ClassLoader) :::info 启动类加载器 启动类加载器使用C&#x2F;C++语言实现的，嵌套在JVM内部。<br>它用来加载Java的核心库（JAVAHOME&#x2F;jre&#x2F;1ib&#x2F;rt.jar、resources.jar或sun.boot.class.path路径下的内容），用于提供JVM自身需要的类。 它并不继承自 java.lang.ClassLoader，没有父加载器。<br>加载扩展类加载器和应用程序类加载器，并指定为他们的父类加载器。<br>出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun等开头的类<br>:::</li>
+<li>2）扩展类加载器（Extension ClassLoader）<br>:::info 扩展类加载器 Java语言编写，JDK1.8由sun.misc.Launcher$ExtClassLoader实现，JDK1.9之后改成PlatFromClassLoader，由jdk.internal.loader.PlatformClassLoader实现。 派生于ClassLoader类. 父类加载器为启动类加载器. 从java.ext.dirs系统属性所指定的目录中加载类库，或从JDK的安装目录的jre&#x2F;lib&#x2F;ext子目录（扩展目录）下加载类库。如果用户创建的JAR放在此目录下，也会自动由扩展类加载器加载. :::</li>
+<li>3）应用程序类加载器（系统类加载器，Application ClassLoader) :::info 应用程序类加载器 java语言编写，由sun.misc.LaunchersAppClassLoader实现. 派生于ClassLoader类. 父类加载器为扩展类加载器. 它负责加载环境变量classpath或系统属性java.class.path指定路径下的类库. 该类加载是程序中默认的类加载器，一般来说，Java应用的类都是由它来完成加载 通过classLoader#getSystemclassLoader（）方法可以获取到该类加载器. :::</li>
+<li>4）用户自定义类加载器（User ClassLoader） :::info 用户自定义类加载器 在Java的日常应用程序开发中，类的加载几乎是由上述3种类加载器相互配合执行的，在必要时，我们还可以自定义类加载器，来定制类的加载方式。 为什么要自定义类加载器？<br>a.隔离加载类 b.修改类加载的方式 c.扩展加载源 d.防止源码泄漏 :::</li>
+</ul>
+<h3 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h3><h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成。 每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到最顶层的启动类加载器中。只有当上一层类加载器反馈自己无法完成这个加载请求（它的搜索范围中没有找到这个类）时，下一层类加载器才会尝试自己去加载。</p>
+<p>还是拿前面提到过的源代码程序ClassLoaderTest举例，ClassLoaderTest加载时调用类加载器的顺序是下面这样的： :::info 类加载时调用类加载器的顺序 ClassLoaderTest.class要进行加载时，它将会启动应用类加载器进行加载ClassLoaderTest类，但是这个系统类加载器不会真正去加载他，而是会调用看是否有父加载器，结果有，是扩展类加载器，扩展类加载器也不会直接去加载，它看自己是否有父加载器没，结果它还是有的，是根类加载器。 所以这个时候根类加载器就去加载这个类，可在%JAVA_HOME%\jre\lib下，它找不到com.wangmeng.Test这个类，所以他告诉他的子类加载器，我找不到，你去加载吧，子类扩展类加载器去%JAVA_HOME%\lib\ext去找，也找不着，它告诉它的子类加载器 System类加载器，我找不到这个类，你去加载吧，结果System类加载器找到了，就加到内存中，并生成Class对象。 这个时间时候启动类加载器（应用类加载器）和实际类加载器（应用类加载器）是同一个. :::</p>
+<p>针对ClassLoaderTest类的加载原理其实就是JAVA中著名的委托加载机制-双亲委派模型。</p>
+<p>那么，有童鞋会奇怪，这不是多余吗？直接加载不就完事了么，为啥还多这么多传递判断呢？</p>
+<p>这里需要先说明一下 Java 虚拟机JVM是如何判定两个 Java 类是相同的：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JVM不仅要看类的全名是否相同，还要看加载此类的类加载器是否一样。只有两者都相同的情况，才认为两个类是相同的。  </span><br><span class="line">即便是同样的字节代码，被不同的类加载器加载之后所得到的类，也是不同的。</span><br></pre></td></tr></table></figure>
+
+<p>双亲委派模型其实是为了保证 Java 核心库的类型安全。</p>
+<p>所有 Java 应用都至少需要引用 java.lang.Object类，也就是说在运行的时候，java.lang.Object这个类需要被加载到 Java 虚拟机中。 如果这个加载过程由 Java 应用自己的类加载器来完成的话，很可能就存在多个版本的 java.lang.Object类，而且这些类之间是不兼容的。</p>
+<p>这里总结一下双亲委派模型的设计动机： 1、代理模式是为了保证 Java 核心库的类型安全：通过代理模式，对于 Java 核心库的类的加载工作由引导类加载器来统一完成，保证了 Java 应用所使用的都是同一个版本的 Java 核心库的类，是互相兼容的。</p>
+<p>2、相同名称的类可以并存在 Java 虚拟机中：不同的类加载器为相同名称的类创建了额外的名称空间。相同名称的类可以并存在 Java 虚拟机中，只需要用不同的类加载器来加载它们即可。不同类加载器加载的类之间是不兼容的，这就相当于在 Java 虚拟机内部创建了一个个相互隔离的 Java 类空间。</p>
+<p>双亲委派模型这种技术思想在许多框架中都被用到，比如以 Apache Tomcat 来说，容器不希望它下面的webapps之间能互相访问到，每个 Web 应用都有一个对应的类加载器实例。</p>
+<p>双亲委派模型可以被打破，需要自定义类加载器，继承ClassLoader类，重写LoadClass方法。</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"></a><div class="post-copyright__author_name">代码小郭</div><div class="post-copyright__author_desc"></div></div><div class="post-copyright__post__info"><a class="post-copyright__reprint" title="该文章为转载文章，注意版权协议" target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/649147464">转载</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://zhuanlan.zhihu.com/p/649147464')">AVA技术-JVM入门，看这一篇就够了！</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/donate/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://zhuanlan.zhihu.com/p/649147464"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=AVA技术-JVM入门，看这一篇就够了！&amp;url=https://zhuanlan.zhihu.com/p/649147464&amp;pic=https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.GnaixEuy.cn" target="_blank">GnaixEuy</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/JVM/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>JVM<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>JAVA 虚拟机<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E8%BD%AC%E8%BD%BD/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>转载<span class="tagsPageCount">4</span></a><a class="post-meta__box__tags" href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>类加载<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>双亲委派机制<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/07/11/%E7%90%86%E6%83%B3%E4%B8%BB%E4%B9%89%E7%9A%84%E9%A3%8E%E9%AA%A8-%EF%BD%9C-%E5%BD%93%E7%A7%91%E5%AD%A6%E6%8E%A2%E7%B4%A2%E6%92%9E%E8%A7%81%E4%B8%AD%E5%9B%BD%E5%BC%8F%E5%88%9B%E6%96%B0/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=2048573913,3733507139&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=749&amp;h=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">理想主义的风骨 ｜ 当科学探索撞见中国式创新</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2024/04/07/Jetbrain%E7%B3%BB%E5%88%97%E5%BF%AB%E6%8D%B7%E9%94%AE-Win%E7%89%88/" title="Jetbrains系列快捷键-Win版"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img0.baidu.com/it/u=452985921,473154784&fm=253&fmt=auto&app=138&f=JPEG?w=696&h=472" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-04-07</div><div class="title">Jetbrains系列快捷键-Win版</div></div></a></div><div><a href="/2025/06/13/%E4%BC%98%E7%A7%80%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%8E%9F%E5%88%99/" title="优秀程序设计的原则"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img0.baidu.com/it/u=1666100213,4202331470&fm=253&fmt=auto&app=138&f=JPEG?w=667&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-06-13</div><div class="title">优秀程序设计的原则</div></div></a></div><div><a href="/2024/02/22/%E5%A6%82%E4%BD%95%E5%81%9A%E5%87%BA%E4%BC%9F%E5%A4%A7%E5%B7%A5%E4%BD%9C/" title="如何做出伟大工作"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.sanity.io/images/4cruvpk8/production/7c30013ab44f5c1265407dd98d7a0ceec650b8f2-1200x675.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-02-22</div><div class="title">如何做出伟大工作</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/zhheo/Sticker-Heo@latest/Sticker/不好意思.png" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">开发、设计、哲学等</b>相关的问题和看法，还有<b style="color:#fff">日常生活</b>的<b style="color:#fff">分享记录</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn"><h1 class="author-info__name">GnaixEuy</h1><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/GnaixEuy" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="mailto:SGGHCJ@live.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bullhorn anzhiyu-shake"></i><span>公告</span></div><div class="announcement_content"><div id="welcome-info"></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFJVM%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是JVM？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM%E7%9A%84%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-number">2.</span> <span class="toc-text">JVM的基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JVM%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E6%80%BB%E8%A7%88"><span class="toc-number">2.1.</span> <span class="toc-text">JVM内存布局总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A0%86-Heap"><span class="toc-number">2.2.</span> <span class="toc-text">堆(Heap)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88-VM-Stack"><span class="toc-number">2.3.</span> <span class="toc-text">虚拟机栈(VM Stack)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88-Native-Method-Stack"><span class="toc-number">2.4.</span> <span class="toc-text">本地方法栈(Native Method Stack)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8-Program-Counter-Register"><span class="toc-number">2.5.</span> <span class="toc-text">程序计数器(Program Counter Register)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E-Execution-Engine"><span class="toc-number">2.6.</span> <span class="toc-text">执行引擎(Execution Engine)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E5%BA%93%E6%8E%A5%E5%8F%A3-Native-Interface"><span class="toc-number">2.7.</span> <span class="toc-text">本地库接口(Native Interface)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E5%BA%93-Native-Libary"><span class="toc-number">2.8.</span> <span class="toc-text">本地方法库(Native Libary)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-number">2.9.</span> <span class="toc-text">类加载器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">2.10.</span> <span class="toc-text">垃圾回收器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.11.</span> <span class="toc-text">双亲委派模型</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/" title="AVA技术-JVM入门，看这一篇就够了！"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AVA技术-JVM入门，看这一篇就够了！"/></a><div class="content"><a class="title" href="/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/" title="AVA技术-JVM入门，看这一篇就够了！">AVA技术-JVM入门，看这一篇就够了！</a><time datetime="2025-09-20T09:48:35.000Z" title="发表于 2025-09-20 17:48:35">2025-09-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/11/%E7%90%86%E6%83%B3%E4%B8%BB%E4%B9%89%E7%9A%84%E9%A3%8E%E9%AA%A8-%EF%BD%9C-%E5%BD%93%E7%A7%91%E5%AD%A6%E6%8E%A2%E7%B4%A2%E6%92%9E%E8%A7%81%E4%B8%AD%E5%9B%BD%E5%BC%8F%E5%88%9B%E6%96%B0/" title="理想主义的风骨 ｜ 当科学探索撞见中国式创新"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=2048573913,3733507139&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=749&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="理想主义的风骨 ｜ 当科学探索撞见中国式创新"/></a><div class="content"><a class="title" href="/2025/07/11/%E7%90%86%E6%83%B3%E4%B8%BB%E4%B9%89%E7%9A%84%E9%A3%8E%E9%AA%A8-%EF%BD%9C-%E5%BD%93%E7%A7%91%E5%AD%A6%E6%8E%A2%E7%B4%A2%E6%92%9E%E8%A7%81%E4%B8%AD%E5%9B%BD%E5%BC%8F%E5%88%9B%E6%96%B0/" title="理想主义的风骨 ｜ 当科学探索撞见中国式创新">理想主义的风骨 ｜ 当科学探索撞见中国式创新</a><time datetime="2025-07-11T15:06:52.000Z" title="发表于 2025-07-11 23:06:52">2025-07-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/08/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Spring-Cloud-vs-Istio-%E5%AE%9E%E6%88%98%E9%80%89%E5%9E%8B%E4%B8%8E%E8%B0%83%E8%AF%95%E6%80%9D%E8%B7%AF/" title="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/post_img/Kubernetes%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️"/></a><div class="content"><a class="title" href="/2025/07/08/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Spring-Cloud-vs-Istio-%E5%AE%9E%E6%88%98%E9%80%89%E5%9E%8B%E4%B8%8E%E8%B0%83%E8%AF%95%E6%80%9D%E8%B7%AF/" title="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️">Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️</a><time datetime="2025-07-08T15:40:00.000Z" title="发表于 2025-07-08 23:40:00">2025-07-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/05/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E7%90%86%E8%A7%A3-Pod-%E4%B8%8E-Service-%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="Kubernetes 学习笔记（一）| 理解 Pod 与 Service 的本质"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/post_img/Kubernetes%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/%E7%94%9F%E6%88%90%20K8s%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E5%B0%81%E9%9D%A2%E5%9B%BE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kubernetes 学习笔记（一）| 理解 Pod 与 Service 的本质"/></a><div class="content"><a class="title" href="/2025/07/05/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E7%90%86%E8%A7%A3-Pod-%E4%B8%8E-Service-%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="Kubernetes 学习笔记（一）| 理解 Pod 与 Service 的本质">Kubernetes 学习笔记（一）| 理解 Pod 与 Service 的本质</a><time datetime="2025-07-05T09:37:32.000Z" title="发表于 2025-07-05 17:37:32">2025-07-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/04/%E6%97%85%E9%80%94%E7%9A%84%E7%A2%8E%E8%AF%AD%E5%93%B2%E5%AD%A6%EF%BD%9C%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F%E5%91%98%E5%AF%B9%E9%97%B2%E8%81%8A%E7%A4%BE%E4%BA%A4%E7%9A%84%E6%B7%B1%E5%A4%9C%E6%80%9D%E8%80%83/" title="旅途的碎语哲学｜一个程序员对闲聊社交的深夜思考💡"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://gips0.baidu.com/it/u=4174956630,963985474&amp;fm=3074&amp;app=3074&amp;f=JPEG" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="旅途的碎语哲学｜一个程序员对闲聊社交的深夜思考💡"/></a><div class="content"><a class="title" href="/2025/07/04/%E6%97%85%E9%80%94%E7%9A%84%E7%A2%8E%E8%AF%AD%E5%93%B2%E5%AD%A6%EF%BD%9C%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F%E5%91%98%E5%AF%B9%E9%97%B2%E8%81%8A%E7%A4%BE%E4%BA%A4%E7%9A%84%E6%B7%B1%E5%A4%9C%E6%80%9D%E8%80%83/" title="旅途的碎语哲学｜一个程序员对闲聊社交的深夜思考💡">旅途的碎语哲学｜一个程序员对闲聊社交的深夜思考💡</a><time datetime="2025-07-03T16:33:02.000Z" title="发表于 2025-07-04 00:33:02">2025-07-04</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="footer_deal"><a class="deal_link" href="mailto:sgghcj@live.com" title="email"><i class="anzhiyufont anzhiyufont anzhiyu-icon-envelope"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://weibo.com/u/5442690682" title="微博"><i class="anzhiyufont anzhiyufont anzhiyu-icon-weibo"></i></a><img class="footer_mini_logo" title="返回顶部" alt="返回顶部" onclick="anzhiyu.scrollToDest(0, 500)" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" size="50px"/><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/GnaixEuy" title="Github"><i class="anzhiyufont anzhiyufont anzhiyu-icon-github"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAAT618N_R7izb2I5l2_WttZilpct9ZSdgngSzsQSLvMWE" title="抖音"><i class="anzhiyufont anzhiyufont anzhiyu-icon-tiktok"></i></a></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2025 By <a class="footer-bar-link" href="/" title="GnaixEuy" target="_blank">GnaixEuy</a></div></div><div id="footer-type-tips"></div><div class="js-pjax"><script>function subtitleType () {
+  if (true) { 
+    window.typed = new Typed("#footer-type-tips", {
+      strings: ["求知若饥&#44; 虚心若愚.","生活明朗&#44; 万物可爱&#44; 人间值得&#44; 未来可期."],
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50
+    })
+  } else {
+    document.getElementById("footer-type-tips").innerHTML = '求知若饥&#44; 虚心若愚.'
+  }
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.cbd.int/typed.js@2.1.0/dist/typed.umd.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}</script></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn" title="更多">更多</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">108</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">4</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://status.gnaixeuy.cn/" title="站点运行监测"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=2581151693,3957058994&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=500" alt="站点运行监测"/><span class="back-menu-item-text">站点运行监测</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://xxqg.gnaixeuy.cn:7452" title="爱国学习平台"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://5b0988e595225.cdn.sohucs.com/images/20180119/c70a9faedafc4520b347381b18a54fc8.jpeg" alt="爱国学习平台"/><span class="back-menu-item-text">爱国学习平台</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://chatgpt.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 小伙伴们</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/CLI/" style="font-size: 0.88rem;">CLI<sup>1</sup></a><a href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 0.88rem;">JAVA 虚拟机<sup>1</sup></a><a href="/tags/JVM/" style="font-size: 0.88rem;">JVM<sup>1</sup></a><a href="/tags/Jetbrains/" style="font-size: 0.88rem;">Jetbrains<sup>1</sup></a><a href="/tags/Kubernetes/" style="font-size: 0.88rem;">Kubernetes<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>2</sup></a><a href="/tags/RBAC/" style="font-size: 0.88rem;">RBAC<sup>1</sup></a><a href="/tags/Spring/" style="font-size: 0.88rem;">Spring<sup>1</sup></a><a href="/tags/grpc/" style="font-size: 0.88rem;">grpc<sup>1</sup></a><a href="/tags/istio/" style="font-size: 0.88rem;">istio<sup>1</sup></a><a href="/tags/k8s/" style="font-size: 0.88rem;">k8s<sup>1</sup></a><a href="/tags/k8s-Dashboard/" style="font-size: 0.88rem;">k8s Dashboard<sup>1</sup></a><a href="/tags/kubeSphere/" style="font-size: 0.88rem;">kubeSphere<sup>1</sup></a><a href="/tags/kubernetes/" style="font-size: 0.88rem;">kubernetes<sup>1</sup></a><a href="/tags/macOS/" style="font-size: 0.88rem;">macOS<sup>3</sup></a><a href="/tags/markdown/" style="font-size: 0.88rem;">markdown<sup>1</sup></a><a href="/tags/rancher/" style="font-size: 0.88rem;">rancher<sup>1</sup></a><a href="/tags/spring-cloud/" style="font-size: 0.88rem;">spring cloud<sup>1</sup></a><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 0.88rem;">云原生<sup>1</sup></a><a href="/tags/%E4%BE%BF%E6%8D%B7%E6%93%8D%E4%BD%9C/" style="font-size: 0.88rem;">便捷操作<sup>1</sup></a><a href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" style="font-size: 0.88rem;">双亲委派机制<sup>1</sup></a><a href="/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/" style="font-size: 0.88rem;">命令行操作<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/" style="font-size: 0.88rem;">基本指令<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 0.88rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 0.88rem;">学习笔记<sup>1</sup></a><a href="/tags/%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86/" style="font-size: 0.88rem;">容器管理<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91/" style="font-size: 0.88rem;">开发<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7/" style="font-size: 0.88rem;">开发技巧<sup>3</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 0.88rem;">微服务<sup>1</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/" style="font-size: 0.88rem;">微服务架构<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 0.88rem;">快速录入<sup>2</sup></a><a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4/" style="font-size: 0.88rem;">操作系统命令<sup>1</sup></a><a href="/tags/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" style="font-size: 0.88rem;">权限控制<sup>1</sup></a><a href="/tags/%E7%90%86%E8%AE%BA%E6%A6%82%E8%BF%B0/" style="font-size: 0.88rem;">理论概述<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E8%A7%92%E8%89%B2/" style="font-size: 0.88rem;">角色<sup>1</sup></a><a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 0.88rem;">转载<sup>4</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 0.88rem;">运维<sup>1</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5/" style="font-size: 0.88rem;">运维实践<sup>1</sup></a><a href="/tags/%E9%89%B4%E6%9D%83/" style="font-size: 0.88rem;">鉴权<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><a id="switch-commentBarrage" href="javascript:anzhiyu.switchCommentBarrage();" title="开关弹幕"><i class="anzhiyufont anzhiyu-icon-danmu"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="6703724141" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=6703724141&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>var meting_api = "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.cbd.int/mermaid@10.2.4/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  anzhiyu.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-khaki-delta.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.39/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-khaki-delta.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"><script async src="/js/anzhiyu/comment_barrage.js"></script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://twikoo-khaki-delta.vercel.app',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.cbd.int/twikoo@1.6.39/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'><div class='name'><span>${array[i].nick} </span></div></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom && ($dom.innerHTML= result)
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><script type="text/javascript" src="https://unpkg.zhimg.com/jquery@latest/dist/jquery.min.js"></script><script defer="true" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/js/txmap.js"></script><canvas class="fireworks" mobile="true"></canvas><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div><!-- hexo injector body_end start --><script>
+    // 全局变量声明区域
+    var fdata = {
+      apiurl: 'https://home.gnaixeuy.cn:8043/',
+      initnumber: 30, //【可选】页面初始化展示文章数量
+      stepnumber: 30, //【可选】每次加载增加的篇数
+      error_img: 'https://npm.elemecdn.com/akilar-candyassets/image/404.gif' //【可选，头像图片加载失败时的默认头像】
+    }
+    //存入本地存储
+    localStorage.setItem("fdatalist",JSON.stringify(fdata))
+    </script>
+    <script data-pjax src="https://npm.elemecdn.com/hexo-filter-fcircle-anzhiyu@1.1.2/assets/js/fetch.js"></script><script data-pjax src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/js/random-friends-post.js"></script><!-- hexo injector body_end end --></body></html>
