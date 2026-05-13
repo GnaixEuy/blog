@@ -1,0 +1,630 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code | GnaixEuy</title><meta name="keywords" content="AI,Docker,Kiro,Claude Code,CC Switch,nginx,反向代理,教程,技能指北"><meta name="author" content="GnaixEuy"><meta name="copyright" content="GnaixEuy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"><meta name="application-name" content="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"><meta property="og:url" content="https://blog.gnaixeuy.cn/2026/05/13/技能指北-用Kiro-Gateway搭建自己的Kiro-Proxy并接入Claude-Code/index.html"><meta property="og:site_name" content="GnaixEuy"><meta property="og:description" content="最近 Kiro 的新用户 Pro 活动挺香：新账号首次升级时，支付页有机会出现 20 美元订阅抵扣，最终金额显示为 $0.00。Pro 到手之后，再配合 Kiro Gateway 做一个自己的 Kiro Proxy，就可以把 Kiro 的额度接进 Claude Code 里。 本文分两部分：  先"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://blog.gnaixeuy.cn/img/post_img/kiro-proxy-ccswitch/cover.svg"><meta property="article:author" content="GnaixEuy"><meta property="article:tag" content=""><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://blog.gnaixeuy.cn/img/post_img/kiro-proxy-ccswitch/cover.svg"><meta name="description" content="最近 Kiro 的新用户 Pro 活动挺香：新账号首次升级时，支付页有机会出现 20 美元订阅抵扣，最终金额显示为 $0.00。Pro 到手之后，再配合 Kiro Gateway 做一个自己的 Kiro Proxy，就可以把 Kiro 的额度接进 Claude Code 里。 本文分两部分：  先"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://blog.gnaixeuy.cn/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/"><link rel="preconnect" href="//cdn.cbd.int"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@6.1.6/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?9fa37e20a4e6ec67fdadd6ed780aaa48";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  linkPageTop: {"enable":true,"title":"与数百名博主无限进步","addFriendPlaceholder":"昵称（请勿包含博客等字样）：\n网站地址（要求博客地址，请勿提交个人主页）：\n头像图片url（请提供尽可能清晰的图片）：\n描述：\n站点截图（可选）：\n"},
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: {"enable":true,"ck":"3FHqfUkvR1jefQRq","LingQueMonitorID":"3FHrKK2VGfLWEyVR"},
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://twikoo-khaki-delta.vercel.app',
+  commentBarrageConfig:{"enable":true,"maxBarrage":1,"barrageTime":4000,"accessToken":"fa8f3dc11c754b8e8cdf5e155e9a609e","mailMd5":"92FDB7007FFBA99F4348CBC63FB0813B"},
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: {"apiurl":"https://home.gnaixeuy.cn:8043/"},
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者","🔍 分享与热心帮助","🏠 智能家居小能手","🔨 设计开发一条龙","🤝 团队小组发动机","🏃 脚踏实地行动派","🧱 Vim综合症重度患者","💢 壮汉人狠话不多"]},
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":true,"limitCount":50,"languages":{"author":"作者: GnaixEuy","link":"链接: ","source":"来源: GnaixEuy","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.2.0/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.2.0/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'GnaixEuy',
+  title: '技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code',
+  postAI: '',
+  pageFillDescription: '一、先白嫖 Kiro Pro, 1. 准备一个纯净新号, 2. 进入 Pro 升级页, 3. 绑定可支付卡看支付页是否变成 0 美元, 4. 订阅成功后立刻关掉下月续费, 5. Pro 到手后确认模型, 二、为什么还要再搭一层 Proxy（而且要搭在云端）, 三、整体架构, 四、把 Kiro 的登录态搬到服务器上, 五、容器内的代理：sing-box, 六、nginx 反代, 用 1Panel 的注意一下, 七、跑通验证, 八、最后一步：CC Switch, 九、踩坑速查, 十、最后, 参考资料最近的新用户活动挺香新账号首次升级时支付页有机会出现美元订阅抵扣最终金额显示为到手之后再配合做一个自己的就可以把的额度接进里本文分两部分先把领到手再把的额度通过接入我自己实际搭的是这条链路自己的域名容器文中的域名订阅地址服务器地址都做了脱敏示例里的都要替换成你自己的配置一先白嫖这部分参考了拈花古佛那篇活动文章流程我重新整理了一遍配图也是重新画的示意图不是原站截图核心逻辑很简单新用户升级进入支付页后如果活动命中会出现首月订阅抵扣最终金额变成这个时候确认订阅就能拿到一个月准备一个纯净新号活动通常面向首次注册首次升级的新用户建议准备一个没有注册过的或账号登录入口注意几个点尽量用没注册过的或账号旧账号如果已经领过权益不建议反复尝试登录后先确认能正常进入控制台再去升级进入升级页登录之后进入账户或用量页面找到或之类的入口列表页通常会显示原价比如这个页面看到美元不代表失败因为真正的抵扣一般是在支付页结算时展示你要确认的是下一步支付页的最终金额绑定可支付卡看支付页是否变成美元进入支付页后绑定一张可以正常支付的卡理论上信用卡部分储蓄卡都可以具体看支付页面支持什么如果优惠命中支付页会出现类似这样的结算结果这里最重要的是只要最终金额不是就先不要点订阅先检查这几件事当前账号是不是新账号支付卡是否可用活动是否还在是否已经识别到首月订阅抵扣如果你没有可用卡可以参考这个注册链接免费开卡注册链接通过这个链接注册可免费开卡支持天费率试用是否升级终身费率余额收益消费挖矿邀请返佣等权益以页面展示为准虚拟卡属于第三方服务可能存在风控扣费失败账号异常等风险能用本人真实可支付卡还是优先用真实卡订阅成功后立刻关掉下月续费生效后回到账户页面点击把后续套餐改回这样做的目的很简单当月继续用下个月不自动扣费建议你订阅成功后马上做这一步不要想着月底再取消忘了取消才是最容易被反杀的地方到手后确认模型到手之后不要只看别人说能用什么模型最准确的方法是后面搭好之后请求模型列表能不能用到或其他高级模型以你账号实际返回的模型列表为准二为什么还要再搭一层而且要搭在云端只用的话其实到这里就完事了但我是想把这份额度塞进里跑代码的那边的接口和用的对不上必须有个东西在中间翻译就是干这事的开源的风格的和风格的都兼容所以这一票客户端都能用按理说一下扔本地也能用我一开始也是这么干的跑了两天就嫌烦每次开机得手动起容器合上盖子睡一觉醒来还得再起一次笔记本断网换链路一抖就抽风台式机和笔记本两头来回切又得各自维护一份索性丢服务器上一了百了本地配一次之后就再也不用管它没有云服务器不想长期续费的家里软路由闲置工控机其实都能顶我这台云服务器到期之后估计就得丢回家那台软路由上接着压榨反正它本来就在那儿吃灰公网入口有走没有就反正把后面那一层换成隧道入口就行里面那套不动三整体架构一张图你的电脑你的服务器切到容器翻译出口代理服务美国节点本地敲请求被路由到我的域名服务器收下后丢给容器里的把它改写成协议再经走美国出口打到结果原路返回容器里就两个东西接客户端的请求管出口节点容器启动会拉一次订阅之后每天再拉一次端口我只绑外网压根摸不到必须从那一层进端口随便挑个高位的别用四把的登录态搬到服务器上容器跑起来还差最关键的一样东西账号的登录凭证本机的登录之后会写一个风格的启动的时候直接读这个文件就能复用不用再走一遍登录文件路径在都一样一下扔到服务器容器里通过环境变量告诉去哪读这个文件你的账号别进别截图发群别丢公开网盘漏了就是别人拿你的在跑五容器内的代理国内直连八成不通容器里得带个代理我用的是理由很简单配置不复杂机场订阅链接直接喂进去就行流量请固定走美区这一堆服务对风控都挺凶你今天日本明天新加坡后天美国地跳被风控限速甚至直接封号的概率是肉眼可见上升的选好美区落地就别再折腾浏览器本地客户端容器出口尽量都走同一个出口我自己用的是这份圈规则把全部分流到了美区策略组开箱即用不用圈也没事下面的链接直接当规则集就能用容器启动的逻辑大概是拉机场订阅按规则把流量锁到美国节点起的所有出站请求都从这里出里配这几个是自己定的等下那边要用生成一个就行是机场订阅用我那份就好是秒数天到点重新拉一次订阅重新选节点这边只要知道代理在哪用着突然开始疯狂超时先看日志确认它现在挑的是哪个节点节点质量直接决定的体感六反代这层就一件事把公网过来的请求转到本机容器端口配置最小化版本里面有两行别动是流式输出的缓冲一开就成了半天没动静然后哗一下全出来长连接给够不然写个稍长的回答就被砍掉用的注意一下我服务器上面板用的是这里有个坑只手写文件的网站列表里看不到这个站那个列表不是实时读的是查它自己的数据库和这两张表你光在里手写一份面板压根不知道这站存在最省事的办法先在面板的网站反向代理里点一个站出来让它把数据库记录文件名域名都对上再去微调里面的内容配出来大概长这样前端后端状态显示已启用就对了直接去改数据库那条路也能走通但翻车概率大没必要七跑通验证到这一步先别急着配两个把链路验一下健康检查模型列表第二个能正常返回模型列表意味着凭证节点域名这一整条链路全通了任意一环挂了这两个都会暴露出来这一步不通就回去改服务端硬上是浪费时间顺便提一句模型列表里能看到什么模型以你账号实际返回的为准用户能不能用到这里返回什么就是什么别人能用不等于你也能八最后一步打开新建一个填三个字段就够了这里有个比较容易踩的坑不要加走的是协议路径它自己会拼你写成最后实际请求是妥妥是给兼容的客户端用的不需要不想用直接用环境变量也行到这就算搭完了敲个进去看一眼指着自己的域名显示的话就大功告成九踩坑速查支付页一直不是别点先确认是不是真新号活动还在不在卡能不能正常支付最终金额不是就是没命中硬点下去是真扣钱的虚拟卡能用吗能但有风险可能被风控可能扣费失败严重的甚至连账号一起异常能上真实卡就上真实卡网站列表里看不到我的站第六节说过了要么从面板反向代理重新建一个要么去里看表光手写是不认的报是那边填的跟里的没对上报八成是多写了协议路径会自己拼请求总超时拉日志看选到哪个节点了流量没命中规则就容易跳到日韩去体感会差很多怎么确认还在回显示下面有用量进度条就还在十最后这套方案是给自己用的别公开成无鉴权接口否则约等于把你的直接送给整个互联网几个底线守住就行用足够长够随机的出来的就够了容器端口只绑凭证和订阅链接不进流量固定走美区别在国家间反复跳剩下的问题就交给时间慢慢调最后顺嘴说一句这种活动随时可能变最终金额还是以官网结账页为准别看了我这篇就两眼一闭点确认参考资料仓库仓库配置参考环境变量文档官方价格页我维护的美区分流规则通用规则集元解锁新活动送一个月',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-05-13 18:57:12',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/css/welcome.css?1"><meta name="generator" content="Hexo 7.1.1"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://status.gnaixeuy.cn/" title="站点运行监测"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=2581151693,3957058994&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=500" alt="站点运行监测"/><span class="back-menu-item-text">站点运行监测</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://ittools.gnaixeuy.cn" title="it-tools工具集"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="it-tools工具集"/><span class="back-menu-item-text">it-tools工具集</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://nas.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://xxqg.gnaixeuy.cn:7452" title="爱国学习平台(暂时关闭)"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://5b0988e595225.cdn.sohucs.com/images/20180119/c70a9faedafc4520b347381b18a54fc8.jpeg" alt="爱国学习平台(暂时关闭)"/><span class="back-menu-item-text">爱国学习平台(暂时关闭)</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://nas.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">GnaixEuy</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 小伙伴们</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" alt="微信" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" alt="支付宝" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/CLI/" style="font-size: 1.05rem;">CLI<sup>1</sup></a><a href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 1.05rem;">JAVA 虚拟机<sup>1</sup></a><a href="/tags/JVM/" style="font-size: 1.05rem;">JVM<sup>1</sup></a><a href="/tags/Jetbrains/" style="font-size: 1.05rem;">Jetbrains<sup>1</sup></a><a href="/tags/Kubernetes/" style="font-size: 1.05rem;">Kubernetes<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 1.05rem;">Linux<sup>2</sup></a><a href="/tags/RBAC/" style="font-size: 1.05rem;">RBAC<sup>1</sup></a><a href="/tags/RocketMQ/" style="font-size: 1.05rem;">RocketMQ<sup>1</sup></a><a href="/tags/grpc/" style="font-size: 1.05rem;">grpc<sup>1</sup></a><a href="/tags/istio/" style="font-size: 1.05rem;">istio<sup>1</sup></a><a href="/tags/k8s/" style="font-size: 1.05rem;">k8s<sup>1</sup></a><a href="/tags/k8s-Dashboard/" style="font-size: 1.05rem;">k8s Dashboard<sup>1</sup></a><a href="/tags/kubeSphere/" style="font-size: 1.05rem;">kubeSphere<sup>1</sup></a><a href="/tags/kubernetes/" style="font-size: 1.05rem;">kubernetes<sup>1</sup></a><a href="/tags/macOS/" style="font-size: 1.05rem;">macOS<sup>3</sup></a><a href="/tags/markdown/" style="font-size: 1.05rem;">markdown<sup>1</sup></a><a href="/tags/rancher/" style="font-size: 1.05rem;">rancher<sup>1</sup></a><a href="/tags/spring-cloud/" style="font-size: 1.05rem;">spring cloud<sup>1</sup></a><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 1.05rem;">云原生<sup>1</sup></a><a href="/tags/%E4%BE%BF%E6%8D%B7%E6%93%8D%E4%BD%9C/" style="font-size: 1.05rem;">便捷操作<sup>1</sup></a><a href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" style="font-size: 1.05rem;">双亲委派机制<sup>1</sup></a><a href="/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/" style="font-size: 1.05rem;">命令行操作<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/" style="font-size: 1.05rem;">基本指令<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 1.05rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.05rem;">学习笔记<sup>1</sup></a><a href="/tags/%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86/" style="font-size: 1.05rem;">容器管理<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91/" style="font-size: 1.05rem;">开发<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7/" style="font-size: 1.05rem;">开发技巧<sup>3</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 1.05rem;">微服务<sup>1</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/" style="font-size: 1.05rem;">微服务架构<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 1.05rem;">快速录入<sup>2</sup></a><a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4/" style="font-size: 1.05rem;">操作系统命令<sup>1</sup></a><a href="/tags/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" style="font-size: 1.05rem;">权限控制<sup>1</sup></a><a href="/tags/%E7%90%86%E8%AE%BA%E6%A6%82%E8%BF%B0/" style="font-size: 1.05rem;">理论概述<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E8%A7%92%E8%89%B2/" style="font-size: 1.05rem;">角色<sup>1</sup></a><a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 1.05rem;">转载<sup>4</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 1.05rem;">运维<sup>1</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5/" style="font-size: 1.05rem;">运维实践<sup>1</sup></a><a href="/tags/%E9%89%B4%E6%9D%83/" style="font-size: 1.05rem;">鉴权<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/05/"><span class="card-archive-list-date">五月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/12/"><span class="card-archive-list-date">十二月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/09/"><span class="card-archive-list-date">九月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/07/"><span class="card-archive-list-date">七月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/06/"><span class="card-archive-list-date">六月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/05/"><span class="card-archive-list-date">五月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/02/"><span class="card-archive-list-date">二月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/AI/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>AI</span></a><a class="article-meta__tags" href="/tags/Docker/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Docker</span></a><a class="article-meta__tags" href="/tags/Kiro/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Kiro</span></a><a class="article-meta__tags" href="/tags/Claude-Code/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Claude Code</span></a><a class="article-meta__tags" href="/tags/CC-Switch/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>CC Switch</span></a><a class="article-meta__tags" href="/tags/nginx/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>nginx</span></a><a class="article-meta__tags" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>反向代理</span></a><a class="article-meta__tags" href="/tags/%E6%95%99%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>教程</span></a><a class="article-meta__tags" href="/tags/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>技能指北</span></a></span></div></div><h1 class="post-title" itemprop="name headline">技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-05-12T19:10:00.000Z" title="发表于 2026-05-13 03:10:00">2026-05-13</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-05-13T10:57:12.629Z" title="更新于 2026-05-13 18:57:12">2026-05-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">3.4k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为厦门"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>厦门</span><span class="post-meta-separator"></span><span class="post-meta-commentcount"><i class="anzhiyufont anzhiyu-icon-comments post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/#post-comment" tabindex="-1"><span id="twikoo-count"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="/img/post_img/kiro-proxy-ccswitch/cover.svg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://blog.gnaixeuy.cn/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/"><header><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url">开发</a><a href="/tags/AI/" tabindex="-1" itemprop="url">AI</a><a href="/tags/Docker/" tabindex="-1" itemprop="url">Docker</a><a href="/tags/Kiro/" tabindex="-1" itemprop="url">Kiro</a><a href="/tags/Claude-Code/" tabindex="-1" itemprop="url">Claude Code</a><a href="/tags/CC-Switch/" tabindex="-1" itemprop="url">CC Switch</a><a href="/tags/nginx/" tabindex="-1" itemprop="url">nginx</a><a href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" tabindex="-1" itemprop="url">反向代理</a><a href="/tags/%E6%95%99%E7%A8%8B/" tabindex="-1" itemprop="url">教程</a><a href="/tags/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97/" tabindex="-1" itemprop="url">技能指北</a><h1 id="CrawlerTitle" itemprop="name headline">技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">GnaixEuy</span><time itemprop="dateCreated datePublished" datetime="2026-05-12T19:10:00.000Z" title="发表于 2026-05-13 03:10:00">2026-05-13</time><time itemprop="dateCreated datePublished" datetime="2026-05-13T10:57:12.629Z" title="更新于 2026-05-13 18:57:12">2026-05-13</time></header><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/cover.svg" alt="Kiro Proxy 封面"></p>
+<p>最近 Kiro 的新用户 Pro 活动挺香：新账号首次升级时，支付页有机会出现 20 美元订阅抵扣，最终金额显示为 <code>$0.00</code>。Pro 到手之后，再配合 Kiro Gateway 做一个自己的 Kiro Proxy，就可以把 Kiro 的额度接进 Claude Code 里。</p>
+<p>本文分两部分：</p>
+<ol>
+<li>先把 Kiro Pro 领到手。</li>
+<li>再把 Kiro Pro 的额度通过 Kiro Proxy 接入 Claude Code。</li>
+</ol>
+<p>我自己实际搭的是这条链路：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Claude Code -&gt; CC Switch -&gt; 自己的域名 -&gt; ng -&gt; Docker 容器 -&gt; Kiro Gateway -&gt; Kiro</span><br></pre></td></tr></table></figure>
+
+<p>文中的域名、Key、订阅地址、服务器地址都做了脱敏。示例里的 <code>kiroproxy.example.com</code>、<code>sk-********</code>、<code>https://example.com/sub?token=********</code> 都要替换成你自己的配置。</p>
+<h2 id="一、先白嫖-Kiro-Pro"><a href="#一、先白嫖-Kiro-Pro" class="headerlink" title="一、先白嫖 Kiro Pro"></a>一、先白嫖 Kiro Pro</h2><p>这部分参考了拈花古佛那篇 Kiro Pro 活动文章，流程我重新整理了一遍，配图也是重新画的示意图，不是原站截图。</p>
+<p>核心逻辑很简单：新用户升级 Pro，进入支付页后如果活动命中，会出现首月订阅抵扣，最终金额变成 <code>$0.00</code>。这个时候确认订阅，就能拿到一个月 Pro。</p>
+<h3 id="1-准备一个纯净新号"><a href="#1-准备一个纯净新号" class="headerlink" title="1. 准备一个纯净新号"></a>1. 准备一个纯净新号</h3><p>活动通常面向首次注册、首次升级的新用户。建议准备一个没有注册过 Kiro 的 Google 或 GitHub 账号。</p>
+<p>登录入口：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://app.kiro.dev/signin</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/kiro-pro-signin.jpg" alt="Kiro 登录页"></p>
+<p>注意几个点：</p>
+<ul>
+<li>尽量用没注册过 Kiro 的 Google 或 GitHub 账号。</li>
+<li>旧账号如果已经领过权益，不建议反复尝试。</li>
+<li>登录后先确认能正常进入 Kiro 控制台，再去升级 Pro。</li>
+</ul>
+<h3 id="2-进入-Pro-升级页"><a href="#2-进入-Pro-升级页" class="headerlink" title="2. 进入 Pro 升级页"></a>2. 进入 Pro 升级页</h3><p>登录之后进入账户或用量页面：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://app.kiro.dev/account/usage</span><br></pre></td></tr></table></figure>
+
+<p>找到 <code>Upgrade Pro</code> 或 <code>Manage Plan</code> 之类的入口。列表页通常会显示 Pro 原价，比如 <code>$20/month</code>。这个页面看到 20 美元不代表失败，因为真正的抵扣一般是在支付页结算时展示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/kiro-pro-upgrade.jpg" alt="Kiro 套餐页，点 Upgrade to Pro"></p>
+<p>你要确认的是下一步支付页的最终金额。</p>
+<h3 id="3-绑定可支付卡，看支付页是否变成-0-美元"><a href="#3-绑定可支付卡，看支付页是否变成-0-美元" class="headerlink" title="3. 绑定可支付卡，看支付页是否变成 0 美元"></a>3. 绑定可支付卡，看支付页是否变成 0 美元</h3><p>进入支付页后，绑定一张可以正常支付的卡。理论上 Visa、MasterCard、信用卡、部分储蓄卡都可以，具体看支付页面支持什么。</p>
+<p>如果优惠命中，支付页会出现类似这样的结算结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Plan price: $20.00</span><br><span class="line">First month credit: -$20.00</span><br><span class="line">Due today: $0.00</span><br></pre></td></tr></table></figure>
+
+<p>这里最重要的是 <code>Due today</code>。只要最终金额不是 <code>$0.00</code>，就先不要点订阅。先检查这几件事：</p>
+<ul>
+<li>当前账号是不是新账号。</li>
+<li>支付卡是否可用。</li>
+<li>活动是否还在。</li>
+<li>Kiro 是否已经识别到首月订阅抵扣。</li>
+</ul>
+<p>如果你没有可用卡，可以参考这个 Roogoo 注册链接：<a target="_blank" rel="noopener" href="https://wap.roogoo.cloud/register?inviteCode=5h2xmh">免费开卡注册链接</a>。通过这个链接注册可免费开卡，支持 7 天 0 费率试用；是否升级终身 0 费率、余额收益、消费挖矿、邀请返佣等权益，以 Roogoo 页面展示为准。</p>
+<p>虚拟卡属于第三方服务，可能存在风控、扣费失败、账号异常等风险。能用本人真实可支付卡，还是优先用真实卡。</p>
+<h3 id="4-订阅成功后，立刻关掉下月续费"><a href="#4-订阅成功后，立刻关掉下月续费" class="headerlink" title="4. 订阅成功后，立刻关掉下月续费"></a>4. 订阅成功后，立刻关掉下月续费</h3><p>Pro 生效后，回到账户页面：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://app.kiro.dev/account/usage</span><br></pre></td></tr></table></figure>
+
+<p>点击 <code>Manage Plan</code>，把后续套餐改回 <code>Kiro Free</code>。这样做的目的很简单：当月 Pro 继续用，下个月不自动扣费。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/kiro-pro-checkout.jpg" alt="把下月套餐切回 Kiro Free"></p>
+<p>建议你订阅成功后马上做这一步，不要想着月底再取消。忘了取消才是最容易被反杀的地方。</p>
+<h3 id="5-Pro-到手后确认模型"><a href="#5-Pro-到手后确认模型" class="headerlink" title="5. Pro 到手后确认模型"></a>5. Pro 到手后确认模型</h3><p>Pro 到手之后，不要只看别人说能用什么模型。最准确的方法是后面搭好 Kiro Proxy 之后请求模型列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl https://kiroproxy.example.com/v1/models \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer sk-********&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>能不能用到 Opus 4.7、Sonnet、Haiku 或其他高级模型，以你账号实际返回的模型列表为准。</p>
+<h2 id="二、为什么还要再搭一层-Proxy（而且要搭在云端）"><a href="#二、为什么还要再搭一层-Proxy（而且要搭在云端）" class="headerlink" title="二、为什么还要再搭一层 Proxy（而且要搭在云端）"></a>二、为什么还要再搭一层 Proxy（而且要搭在云端）</h2><p>只用 Kiro IDE 的话其实到这里就完事了，但我是想把这份 Pro 额度塞进 Claude Code 里跑代码的，Kiro 那边的接口和 Claude Code 用的对不上，必须有个东西在中间翻译。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jwadow/kiro-gateway">Kiro Gateway</a> 就是干这事的，开源的，OpenAI 风格的 <code>/v1/chat/completions</code> 和 Anthropic 风格的 <code>/v1/messages</code> 都兼容，所以 Cherry Studio、ChatBox、Claude Code 这一票客户端都能用。</p>
+<p>按理说 <code>docker run</code> 一下扔本地也能用，我一开始也是这么干的，跑了两天就嫌烦：每次开机得手动起容器、合上盖子睡一觉醒来还得再起一次、笔记本断网换 WiFi 链路一抖 Claude Code 就抽风、台式机和笔记本两头来回切又得各自维护一份。索性丢服务器上一了百了，本地配一次 Base URL 之后就再也不用管它。</p>
+<blockquote>
+<p>没有云服务器、不想长期续费的，家里 NAS、软路由、闲置工控机其实都能顶。我这台云服务器到期之后估计就得丢回家那台 J1900 软路由上接着压榨，反正它本来就 7×24 在那儿吃灰。公网入口有 IPv4 走 DDNS，没有就 Cloudflare Tunnel &#x2F; frp &#x2F; Tailscale Funnel，反正把后面 nginx 那一层换成隧道入口就行，里面 Docker 那套不动。</p>
+</blockquote>
+<h2 id="三、整体架构"><a href="#三、整体架构" class="headerlink" title="三、整体架构"></a>三、整体架构</h2><p>一张图：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">   你的电脑                                 你的服务器</span><br><span class="line">┌──────────────┐   HTTPS   ┌──────────────────────────────────────┐</span><br><span class="line">│              │ ────────▶ │                                      │</span><br><span class="line">│ Claude Code  │           │   nginx                              │</span><br><span class="line">│      │       │           │     │                                │</span><br><span class="line">│      ▼       │           │     ▼  127.0.0.1:39287               │</span><br><span class="line">│   CC Switch  │           │   ┌────────────────────────────┐     │</span><br><span class="line">│  (切到 Proxy) │           │   │  Docker 容器                │     │</span><br><span class="line">└──────────────┘           │   │  ┌──────────────────────┐  │     │</span><br><span class="line">                           │   │  │  Kiro Gateway        │  │     │</span><br><span class="line">                           │   │  │  /v1/messages 翻译   │  │     │</span><br><span class="line">                           │   │  └──────────┬───────────┘  │     │</span><br><span class="line">                           │   │             │              │     │</span><br><span class="line">                           │   │             ▼              │     │</span><br><span class="line">                           │   │  ┌──────────────────────┐  │     │</span><br><span class="line">                           │   │  │  sing-box 出口代理    │──┼─────┼─▶ Kiro 服务</span><br><span class="line">                           │   │  │  (美国节点)           │  │     │</span><br><span class="line">                           │   │  └──────────────────────┘  │     │</span><br><span class="line">                           │   └────────────────────────────┘     │</span><br><span class="line">                           └──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>本地敲 <code>claude</code>，请求被 CC Switch 路由到我的域名，服务器 nginx 收下后丢给容器里的 Kiro Gateway，Gateway 把它改写成 Kiro 协议，再经 sing-box 走美国出口打到 Kiro，结果原路返回。</p>
+<p>容器里就两个东西，Kiro Gateway 接客户端的请求，sing-box 管出口节点。容器启动会拉一次订阅，之后每 3 天再拉一次。Gateway 端口我只绑 <code>127.0.0.1</code>，外网压根摸不到，必须从 nginx 那一层进：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;127.0.0.1:39287:8000&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>端口随便挑个高位的，别用 8080。</p>
+<h2 id="四、把-Kiro-的登录态搬到服务器上"><a href="#四、把-Kiro-的登录态搬到服务器上" class="headerlink" title="四、把 Kiro 的登录态搬到服务器上"></a>四、把 Kiro 的登录态搬到服务器上</h2><p>容器跑起来还差最关键的一样东西 —— Kiro 账号的登录凭证。</p>
+<p>本机的 Kiro IDE 登录之后会写一个 AWS SSO 风格的 token，Gateway 启动的时候直接读这个文件就能复用，不用再走一遍登录。文件路径在 macOS &#x2F; Linux 都一样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.aws/sso/cache/kiro-auth-token.json</span><br></pre></td></tr></table></figure>
+
+<p>scp 一下扔到服务器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">scp ~/.aws/sso/cache/kiro-auth-token.json \</span><br><span class="line">  user@your-server:/home/user/kiro-gateway-proxy/secrets/</span><br><span class="line"></span><br><span class="line"><span class="built_in">chmod</span> 600 /home/user/kiro-gateway-proxy/secrets/kiro-auth-token.json</span><br></pre></td></tr></table></figure>
+
+<p>容器里通过环境变量告诉 Gateway 去哪读：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">environment:</span></span><br><span class="line">  <span class="attr">KIRO_CREDS_FILE:</span> <span class="string">/app/secrets/kiro-auth-token.json</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>⚠️ 这个 token 文件 &#x3D; 你的 Kiro 账号。别进 Git，别截图发群，别丢公开网盘，漏了就是别人拿你的 Pro 在跑。</p>
+</blockquote>
+<h2 id="五、容器内的代理：sing-box"><a href="#五、容器内的代理：sing-box" class="headerlink" title="五、容器内的代理：sing-box"></a>五、容器内的代理：sing-box</h2><p>国内直连 Kiro 八成不通，容器里得带个代理。我用的是 sing-box，理由很简单 —— 配置不复杂、机场订阅链接直接喂进去就行。</p>
+<blockquote>
+<p>🇺🇸 <strong>AI 流量请固定走美区。</strong> Kiro、Claude、ChatGPT、Gemini 这一堆 AI 服务对 IP 风控都挺凶，你今天日本明天新加坡后天美国地跳，被风控、限速甚至直接封号的概率是肉眼可见上升的。<strong>选好美区落地就别再折腾</strong>，浏览器、本地客户端、容器出口尽量都走同一个出口。</p>
+<p>我自己用的是这份圈 X 规则，把 Claude、Kiro、OpenAI、Gemini、Perplexity 全部分流到了美区策略组，开箱即用：</p>
+<p>👉 <a target="_blank" rel="noopener" href="https://github.com/GnaixEuy/quantumultx-config/blob/main/filter/ai-all-in-one.list">GnaixEuy&#x2F;quantumultx-config · filter&#x2F;ai-all-in-one.list</a></p>
+<p>不用圈 X 也没事，下面的 raw 链接 sing-box &#x2F; mihomo &#x2F; clash 直接 import 当规则集就能用。</p>
+</blockquote>
+<p>容器启动的逻辑大概是：拉机场订阅 → 按规则把 AI 流量锁到美国节点 → 起 sing-box → Gateway 的所有出站请求都从这里出。</p>
+<p><code>.env</code> 里配这几个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PROXY_API_KEY=sk-********</span><br><span class="line">SUBSCRIPTION_URL=https://example.com/sub?token=********</span><br><span class="line">AI_RULE_URL=https://raw.githubusercontent.com/GnaixEuy/quantumultx-config/main/filter/ai-all-in-one.list</span><br><span class="line">SUBSCRIPTION_UPDATE_INTERVAL_SECONDS=259200</span><br><span class="line">KIRO_REGION=us-east-1</span><br><span class="line">LOG_LEVEL=INFO</span><br></pre></td></tr></table></figure>
+
+<p><code>PROXY_API_KEY</code> 是自己定的，等下 Claude Code 那边要用，<code>openssl rand -hex 32</code> 生成一个就行；<code>SUBSCRIPTION_URL</code> 是机场订阅；<code>AI_RULE_URL</code> 用我那份就好；<code>259200</code> 是秒数 —— 3 天，到点重新拉一次订阅、重新选节点。</p>
+<p>Gateway 这边只要知道代理在哪：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VPN_PROXY_URL=http://127.0.0.1:7890</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 用着突然开始疯狂超时？先看 sing-box 日志，确认它现在挑的是哪个节点。节点质量直接决定 Claude Code 的体感。</p>
+</blockquote>
+<h2 id="六、nginx-反代"><a href="#六、nginx-反代" class="headerlink" title="六、nginx 反代"></a>六、nginx 反代</h2><p>nginx 这层就一件事：把公网过来的 HTTPS 请求转到本机容器端口。配置最小化版本：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span><span class="regexp"> ^~</span> / &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://127.0.0.1:39287;</span><br><span class="line">    <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host <span class="variable">$host</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">    <span class="attribute">proxy_read_timeout</span> <span class="number">3600s</span>;</span><br><span class="line">    <span class="attribute">proxy_send_timeout</span> <span class="number">3600s</span>;</span><br><span class="line">    <span class="attribute">proxy_buffering</span> <span class="literal">off</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>里面有两行别动：<code>proxy_buffering off</code> —— Claude Code 是流式输出的，缓冲一开就成了”半天没动静然后哗一下全出来”；<code>proxy_read_timeout 3600s</code> —— 长连接给够，不然写个稍长的回答就被 nginx 砍掉。</p>
+<h3 id="用-1Panel-的注意一下"><a href="#用-1Panel-的注意一下" class="headerlink" title="用 1Panel 的注意一下"></a>用 1Panel 的注意一下</h3><p>我服务器上面板用的是 1Panel，这里有个坑：<strong>只手写 conf 文件，1Panel 的网站列表里看不到这个站。</strong></p>
+<p>1Panel 那个列表不是实时读 conf 的，是查它自己的 SQLite 数据库（<code>/opt/1panel/db/agent.db</code>，<code>websites</code> 和 <code>website_domains</code> 这两张表）。你光在 <code>/opt/1panel/www/conf.d/</code> 里手写一份 <code>.conf</code>，面板压根不知道这站存在。</p>
+<p>最省事的办法 —— 先在面板的”网站 → 反向代理”里点一个站出来，让它把数据库记录、conf 文件名、域名都对上，再去微调里面的内容。配出来大概长这样，前端 <code>/</code>、后端 <code>http://127.0.0.1:39287</code>，状态显示已启用就对了：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/1panel-reverse-proxy.png" alt="1Panel 反向代理配置"></p>
+<p>直接去改数据库那条路也能走通，但翻车概率大，没必要。</p>
+<h2 id="七、跑通验证"><a href="#七、跑通验证" class="headerlink" title="七、跑通验证"></a>七、跑通验证</h2><p>到这一步先别急着配 Claude Code，两个 curl 把链路验一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 健康检查</span></span><br><span class="line">curl https://kiroproxy.example.com/health</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 模型列表</span></span><br><span class="line">curl https://kiroproxy.example.com/v1/models \</span><br><span class="line">  -H <span class="string">&quot;Authorization: Bearer sk-********&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>第二个能正常返回模型列表，意味着 Kiro 凭证 → sing-box 节点 → Gateway → nginx → 域名 &#x2F; HTTPS 这一整条链路全通了。任意一环挂了这两个 curl 都会暴露出来，这一步不通就回去改服务端，硬上 Claude Code 是浪费时间。</p>
+<p>顺便提一句，模型列表里能看到什么模型<strong>以你账号实际返回的为准</strong>，Pro 用户能不能用到 Opus 4.7、Sonnet、Haiku，这里返回什么就是什么，别人能用不等于你也能。</p>
+<h2 id="八、最后一步：CC-Switch"><a href="#八、最后一步：CC-Switch" class="headerlink" title="八、最后一步：CC Switch"></a>八、最后一步：CC Switch</h2><p>打开 CC Switch，新建一个 Claude Code Provider：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/ccswitch-config.png" alt="CC Switch 配置示意"></p>
+<p>填三个字段就够了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Name:     Kiro Proxy</span><br><span class="line">Base URL: https://kiroproxy.example.com</span><br><span class="line">API Key:  sk-********</span><br></pre></td></tr></table></figure>
+
+<p>这里有个比较容易踩的坑 —— **Base URL 不要加 <code>/v1</code>**。Claude Code 走的是 Anthropic 协议，路径它自己会拼，你写成 <code>https://kiroproxy.example.com/v1</code>，最后实际请求是 <code>/v1/v1/messages</code>，妥妥 404。<code>/v1</code> 是给 OpenAI 兼容的客户端用的，Claude Code 不需要。</p>
+<p>不想用 CC Switch 直接用环境变量也行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ANTHROPIC_BASE_URL=<span class="string">&quot;https://kiroproxy.example.com&quot;</span></span><br><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=<span class="string">&quot;sk-********&quot;</span></span><br><span class="line">claude</span><br></pre></td></tr></table></figure>
+
+<p>到这就算搭完了。敲个 <code>claude</code> 进去 <code>/status</code> 看一眼，Anthropic base URL 指着自己的域名、Model 显示 Opus 4.7 的话就大功告成：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/claude-code-running.png" alt="Claude Code 跑通效果"></p>
+<h2 id="九、踩坑速查"><a href="#九、踩坑速查" class="headerlink" title="九、踩坑速查"></a>九、踩坑速查</h2><p><strong>支付页一直不是 $0.00。</strong> 别点。先确认是不是真新号、活动还在不在、卡能不能正常支付，最终金额不是 0 就是没命中，硬点下去是真扣钱的。</p>
+<p><strong>虚拟卡能用吗？</strong> 能，但有风险，可能被风控、可能扣费失败、严重的甚至连 Kiro 账号一起异常。能上真实卡就上真实卡。</p>
+<p><strong>1Panel 网站列表里看不到我的站。</strong> 第六节说过了，要么从面板”反向代理”重新建一个，要么去 <code>agent.db</code> 里看 <code>websites</code> 表 —— 光手写 conf 1Panel 是不认的。</p>
+<p><strong>Claude Code 报 401。</strong> 99% 是 CC Switch 那边填的 API Key 跟 <code>.env</code> 里的 <code>PROXY_API_KEY</code> 没对上。</p>
+<p><strong>Claude Code 报 404。</strong> 八成是 Base URL 多写了 <code>/v1</code>，Anthropic 协议路径会自己拼。</p>
+<p><strong>请求总超时。</strong> 拉 sing-box 日志看选到哪个节点了，AI 流量没命中规则就容易跳到日韩去，体感会差很多。</p>
+<p><strong>怎么确认 Pro 还在。</strong> 回 <code>https://app.kiro.dev/account/usage</code>，Plan 显示 Pro、下面有用量进度条就还在。</p>
+<h2 id="十、最后"><a href="#十、最后" class="headerlink" title="十、最后"></a>十、最后</h2><p>这套方案是给自己用的，<strong>别公开成无鉴权接口</strong>，否则约等于把你的 Kiro Pro 直接送给整个互联网。几个底线守住就行：API Key 用足够长够随机的（<code>openssl rand -hex 32</code> 出来的就够了）、容器端口只绑 <code>127.0.0.1</code>、Kiro 凭证和订阅链接不进 Git、AI 流量固定走美区别在国家间反复跳，剩下的问题就交给时间慢慢调。</p>
+<p>最后顺嘴说一句，Kiro Pro 这种活动随时可能变，最终金额还是以官网结账页为准，别看了我这篇就两眼一闭点确认。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/jwadow/kiro-gateway">Kiro Gateway GitHub 仓库</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/farion1231/cc-switch">CC Switch GitHub 仓库</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.aitongdao.com/tools/cc-switch/">CC Switch Provider 配置参考</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.claude.com/docs/en/env-vars">Claude Code 环境变量文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://kiro.dev/pricing/">Kiro 官方价格页</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/GnaixEuy/quantumultx-config/blob/main/filter/ai-all-in-one.list">我维护的 AI 美区分流规则（Quantumult X &#x2F; 通用规则集）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.15um.com/6036">0 元解锁 Claude Opus 4.7，Kiro 新活动送一个月 Pro</a></li>
+</ul>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" title="头像" alt="头像"></a><div class="post-copyright__author_name">GnaixEuy</div><div class="post-copyright__author_desc"></div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://blog.gnaixeuy.cn/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://blog.gnaixeuy.cn/2026/05/13/技能指北-用Kiro-Gateway搭建自己的Kiro-Proxy并接入Claude-Code/')">技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/WechatPay.JPG" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/pay/AliPay.JPG" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/donate/" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://blog.gnaixeuy.cn/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code&amp;url=https://blog.gnaixeuy.cn/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/&amp;pic=/img/post_img/kiro-proxy-ccswitch/cover.svg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.GnaixEuy.cn" target="_blank">GnaixEuy</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/AI/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>AI<span class="tagsPageCount">3</span></a><a class="post-meta__box__tags" href="/tags/Docker/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Docker<span class="tagsPageCount">3</span></a><a class="post-meta__box__tags" href="/tags/Kiro/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Kiro<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/Claude-Code/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Claude Code<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/CC-Switch/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>CC Switch<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/nginx/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>nginx<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>反向代理<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E6%95%99%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>教程<span class="tagsPageCount">2</span></a><a class="post-meta__box__tags" href="/tags/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>技能指北<span class="tagsPageCount">2</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="/img/post_img/kiro-proxy-ccswitch/cover.svg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/12/15/RocketMQ-%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93%EF%BC%9A%E4%BB%8E%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B%E5%88%B0%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=1082652513,1414359884&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=1024&amp;h=399" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">RocketMQ 核心设计与实践总结：从消息模型到最终一致性方案</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2025/02/08/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%F0%9F%A6%99MacBookPro%E4%B8%8A%E4%BD%BF%E7%94%A8Docker%E5%92%8COllama%E9%83%A8%E7%BD%B2RagFlow%E4%B8%8EDeepSeek%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8C%97/" title="技能指北 | 🦙 MacBookPro上使用Docker和Ollama部署RagFlow与DeepSeek完全指北"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img0.baidu.com/it/u=3210767786,443305403&fm=253&fmt=auto&app=120&f=JPEG?w=799&h=500" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-02-08</div><div class="title">技能指北 | 🦙 MacBookPro上使用Docker和Ollama部署RagFlow与DeepSeek完全指北</div></div></a></div><div><a href="/2025/02/14/%E5%9B%BD%E8%BF%90%E7%BA%A7%E5%88%9B%E6%96%B0%20%EF%BD%9C%E4%BA%BA%E4%BA%BA%E9%83%BD%E6%98%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%810%E5%9F%BA%E7%A1%80%E5%8D%81%E8%A1%8C%E4%BB%A3%E7%A0%81%E8%AE%AD%E7%BB%83%E5%90%8C%E6%AC%BEDeepSeek/" title="国运级创新 ｜人人都是工程师！0基础十行代码训练同款DeepSeek"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic.rmb.bdstatic.com/bjh/down/2a1b6b73f933f692668a7be5cf08db5e.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-02-14</div><div class="title">国运级创新 ｜人人都是工程师！0基础十行代码训练同款DeepSeek</div></div></a></div><div><a href="/2025/02/06/%E5%9F%BA%E4%BA%8EmacOS%E7%9A%84Docker%E5%8C%96%E4%BC%81%E4%B8%9A%E7%BA%A7%E7%9F%A5%E8%AF%86%E5%BA%93%E9%83%A8%E7%BD%B2%E2%80%94%E2%80%94DeepSeek-RAGFlow%E6%B7%B1%E5%BA%A6%E9%9B%86%E6%88%90%E5%AE%9E%E8%B7%B5/" title="基于macOS的Docker化企业级知识库部署——DeepSeek-RAGFlow深度集成实践"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-b01a816391b2885d47220935a82f8d3c_r.jpg?source=2c26e567" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-02-06</div><div class="title">基于macOS的Docker化企业级知识库部署——DeepSeek-RAGFlow深度集成实践</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/zhheo/Sticker-Heo@latest/Sticker/不好意思.png" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">这有关于<b style="color:#fff">开发、设计、哲学等</b>相关的问题和看法，还有<b style="color:#fff">日常生活</b>的<b style="color:#fff">分享记录</b>。</div><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">相信你可以在这里找到对你有用的<b style="color:#fff">知识</b>和<b style="color:#fff">教程</b>。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn"><h1 class="author-info__name">GnaixEuy</h1><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/GnaixEuy" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="mailto:SGGHCJ@live.com" target="_blank" title="Email"><i class="anzhiyufont anzhiyu-icon-envelope"></i></a></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bullhorn anzhiyu-shake"></i><span>公告</span></div><div class="announcement_content"><div id="welcome-info"></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E7%99%BD%E5%AB%96-Kiro-Pro"><span class="toc-number">1.</span> <span class="toc-text">一、先白嫖 Kiro Pro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%AA%E7%BA%AF%E5%87%80%E6%96%B0%E5%8F%B7"><span class="toc-number">1.1.</span> <span class="toc-text">1. 准备一个纯净新号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%BF%9B%E5%85%A5-Pro-%E5%8D%87%E7%BA%A7%E9%A1%B5"><span class="toc-number">1.2.</span> <span class="toc-text">2. 进入 Pro 升级页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BB%91%E5%AE%9A%E5%8F%AF%E6%94%AF%E4%BB%98%E5%8D%A1%EF%BC%8C%E7%9C%8B%E6%94%AF%E4%BB%98%E9%A1%B5%E6%98%AF%E5%90%A6%E5%8F%98%E6%88%90-0-%E7%BE%8E%E5%85%83"><span class="toc-number">1.3.</span> <span class="toc-text">3. 绑定可支付卡，看支付页是否变成 0 美元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%AE%A2%E9%98%85%E6%88%90%E5%8A%9F%E5%90%8E%EF%BC%8C%E7%AB%8B%E5%88%BB%E5%85%B3%E6%8E%89%E4%B8%8B%E6%9C%88%E7%BB%AD%E8%B4%B9"><span class="toc-number">1.4.</span> <span class="toc-text">4. 订阅成功后，立刻关掉下月续费</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Pro-%E5%88%B0%E6%89%8B%E5%90%8E%E7%A1%AE%E8%AE%A4%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.5.</span> <span class="toc-text">5. Pro 到手后确认模型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E5%86%8D%E6%90%AD%E4%B8%80%E5%B1%82-Proxy%EF%BC%88%E8%80%8C%E4%B8%94%E8%A6%81%E6%90%AD%E5%9C%A8%E4%BA%91%E7%AB%AF%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">二、为什么还要再搭一层 Proxy（而且要搭在云端）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">三、整体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%8A%8A-Kiro-%E7%9A%84%E7%99%BB%E5%BD%95%E6%80%81%E6%90%AC%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A"><span class="toc-number">4.</span> <span class="toc-text">四、把 Kiro 的登录态搬到服务器上</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84%E4%BB%A3%E7%90%86%EF%BC%9Asing-box"><span class="toc-number">5.</span> <span class="toc-text">五、容器内的代理：sing-box</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81nginx-%E5%8F%8D%E4%BB%A3"><span class="toc-number">6.</span> <span class="toc-text">六、nginx 反代</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8-1Panel-%E7%9A%84%E6%B3%A8%E6%84%8F%E4%B8%80%E4%B8%8B"><span class="toc-number">6.1.</span> <span class="toc-text">用 1Panel 的注意一下</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E8%B7%91%E9%80%9A%E9%AA%8C%E8%AF%81"><span class="toc-number">7.</span> <span class="toc-text">七、跑通验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%9C%80%E5%90%8E%E4%B8%80%E6%AD%A5%EF%BC%9ACC-Switch"><span class="toc-number">8.</span> <span class="toc-text">八、最后一步：CC Switch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E8%B8%A9%E5%9D%91%E9%80%9F%E6%9F%A5"><span class="toc-number">9.</span> <span class="toc-text">九、踩坑速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%9C%80%E5%90%8E"><span class="toc-number">10.</span> <span class="toc-text">十、最后</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">11.</span> <span class="toc-text">参考资料</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/" title="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/post_img/kiro-proxy-ccswitch/cover.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code"/></a><div class="content"><a class="title" href="/2026/05/13/%E6%8A%80%E8%83%BD%E6%8C%87%E5%8C%97-%E7%94%A8Kiro-Gateway%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Kiro-Proxy%E5%B9%B6%E6%8E%A5%E5%85%A5Claude-Code/" title="技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code">技能指北 | 白嫖 Kiro Pro 后，用 Kiro Proxy 接入 Claude Code</a><time datetime="2026-05-12T19:10:00.000Z" title="发表于 2026-05-13 03:10:00">2026-05-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/12/15/RocketMQ-%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93%EF%BC%9A%E4%BB%8E%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B%E5%88%B0%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/" title="RocketMQ 核心设计与实践总结：从消息模型到最终一致性方案"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=1082652513,1414359884&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=1024&amp;h=399" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RocketMQ 核心设计与实践总结：从消息模型到最终一致性方案"/></a><div class="content"><a class="title" href="/2025/12/15/RocketMQ-%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93%EF%BC%9A%E4%BB%8E%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B%E5%88%B0%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/" title="RocketMQ 核心设计与实践总结：从消息模型到最终一致性方案">RocketMQ 核心设计与实践总结：从消息模型到最终一致性方案</a><time datetime="2025-12-15T03:32:46.000Z" title="发表于 2025-12-15 11:32:46">2025-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/" title="JAVA技术-JVM入门，看这一篇就够了！"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=2886508070,2421404822&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=608&amp;h=318" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JAVA技术-JVM入门，看这一篇就够了！"/></a><div class="content"><a class="title" href="/2025/09/20/JAVA%E6%8A%80%E6%9C%AF-JVM%E5%85%A5%E9%97%A8%EF%BC%8C%E7%9C%8B%E8%BF%99%E4%B8%80%E7%AF%87%E5%B0%B1%E5%A4%9F%E4%BA%86%EF%BC%81/" title="JAVA技术-JVM入门，看这一篇就够了！">JAVA技术-JVM入门，看这一篇就够了！</a><time datetime="2025-09-20T09:48:35.000Z" title="发表于 2025-09-20 17:48:35">2025-09-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/11/%E7%90%86%E6%83%B3%E4%B8%BB%E4%B9%89%E7%9A%84%E9%A3%8E%E9%AA%A8-%EF%BD%9C-%E5%BD%93%E7%A7%91%E5%AD%A6%E6%8E%A2%E7%B4%A2%E6%92%9E%E8%A7%81%E4%B8%AD%E5%9B%BD%E5%BC%8F%E5%88%9B%E6%96%B0/" title="理想主义的风骨 ｜ 当科学探索撞见中国式创新"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.baidu.com/it/u=2048573913,3733507139&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=749&amp;h=500" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="理想主义的风骨 ｜ 当科学探索撞见中国式创新"/></a><div class="content"><a class="title" href="/2025/07/11/%E7%90%86%E6%83%B3%E4%B8%BB%E4%B9%89%E7%9A%84%E9%A3%8E%E9%AA%A8-%EF%BD%9C-%E5%BD%93%E7%A7%91%E5%AD%A6%E6%8E%A2%E7%B4%A2%E6%92%9E%E8%A7%81%E4%B8%AD%E5%9B%BD%E5%BC%8F%E5%88%9B%E6%96%B0/" title="理想主义的风骨 ｜ 当科学探索撞见中国式创新">理想主义的风骨 ｜ 当科学探索撞见中国式创新</a><time datetime="2025-07-11T15:06:52.000Z" title="发表于 2025-07-11 23:06:52">2025-07-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/07/08/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Spring-Cloud-vs-Istio-%E5%AE%9E%E6%88%98%E9%80%89%E5%9E%8B%E4%B8%8E%E8%B0%83%E8%AF%95%E6%80%9D%E8%B7%AF/" title="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/post_img/Kubernetes%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️"/></a><div class="content"><a class="title" href="/2025/07/08/Kubernetes-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-Spring-Cloud-vs-Istio-%E5%AE%9E%E6%88%98%E9%80%89%E5%9E%8B%E4%B8%8E%E8%B0%83%E8%AF%95%E6%80%9D%E8%B7%AF/" title="Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️">Kubernetes 学习笔记（二）| Spring Cloud vs Istio 实战选型与调试思路 🌱️</a><time datetime="2025-07-08T15:40:00.000Z" title="发表于 2025-07-08 23:40:00">2025-07-08</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="footer_deal"><a class="deal_link" href="mailto:sgghcj@live.com" title="email"><i class="anzhiyufont anzhiyufont anzhiyu-icon-envelope"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://weibo.com/u/5442690682" title="微博"><i class="anzhiyufont anzhiyufont anzhiyu-icon-weibo"></i></a><img class="footer_mini_logo" title="返回顶部" alt="返回顶部" onclick="anzhiyu.scrollToDest(0, 500)" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" size="50px"/><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/GnaixEuy" title="Github"><i class="anzhiyufont anzhiyufont anzhiyu-icon-github"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.douyin.com/user/MS4wLjABAAAAT618N_R7izb2I5l2_WttZilpct9ZSdgngSzsQSLvMWE" title="抖音"><i class="anzhiyufont anzhiyufont anzhiyu-icon-tiktok"></i></a></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2026 By <a class="footer-bar-link" href="/" title="GnaixEuy" target="_blank">GnaixEuy</a></div></div><div id="footer-type-tips"></div><div class="js-pjax"><script>function subtitleType () {
+  if (true) { 
+    window.typed = new Typed("#footer-type-tips", {
+      strings: ["求知若饥&#44; 虚心若愚.","生活明朗&#44; 万物可爱&#44; 人间值得&#44; 未来可期."],
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50
+    })
+  } else {
+    document.getElementById("footer-type-tips").innerHTML = '求知若饥&#44; 虚心若愚.'
+  }
+}
+
+if (true) {
+  if (typeof Typed === 'function') {
+    subtitleType()
+  } else {
+    getScript('https://cdn.cbd.int/typed.js@2.1.0/dist/typed.umd.js').then(subtitleType)
+  }
+} else {
+  subtitleType()
+}</script></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn" title="更多">更多</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">4</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://www.gnaixeuy.cn/" title="主页"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/photo/IMG_1067.JPG" alt="主页"/><span class="back-menu-item-text">主页</span></a><a class="back-menu-item" href="https://blog.gnaixeuy.cn/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">工具链</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://status.gnaixeuy.cn/" title="站点运行监测"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.baidu.com/it/u=2581151693,3957058994&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=500" alt="站点运行监测"/><span class="back-menu-item-text">站点运行监测</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://home.gnaixeuy.cn:5001/" title="Nas私有云"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="Nas私有云"/><span class="back-menu-item-text">Nas私有云</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://ittools.gnaixeuy.cn" title="it-tools工具集"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://hitcon.org/2012/en/images/sponsor/synology.png" alt="it-tools工具集"/><span class="back-menu-item-text">it-tools工具集</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://nas.gnaixeuy.cn:3000" title="ChatGPT-Next"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://i-1.sosoyx.com/2023/0216/e91b55b.png" alt="ChatGPT-Next"/><span class="back-menu-item-text">ChatGPT-Next</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://xxqg.gnaixeuy.cn:7452" title="爱国学习平台(暂时关闭)"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://5b0988e595225.cdn.sohucs.com/images/20180119/c70a9faedafc4520b347381b18a54fc8.jpeg" alt="爱国学习平台(暂时关闭)"/><span class="back-menu-item-text">爱国学习平台(暂时关闭)</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="http://nas.gnaixeuy.cn:3001" title="LobeHub 智能AI聚合站"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://camo.githubusercontent.com/507b94bc5e512af9b1fed647cfdb72167223477e3a5cb46f3cb2b662471c54e7/68747470733a2f2f72656769737472792e6e706d6d6972726f722e636f6d2f406c6f62656875622f6173736574732d6c6f676f2f312e302e302f66696c65732f6173736574732f6c6f676f2d33642e77656270" alt="LobeHub 智能AI聚合站"/><span class="back-menu-item-text">LobeHub 智能AI聚合站</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 小伙伴们</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=6703724141&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/CLI/" style="font-size: 0.88rem;">CLI<sup>1</sup></a><a href="/tags/JAVA-%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 0.88rem;">JAVA 虚拟机<sup>1</sup></a><a href="/tags/JVM/" style="font-size: 0.88rem;">JVM<sup>1</sup></a><a href="/tags/Jetbrains/" style="font-size: 0.88rem;">Jetbrains<sup>1</sup></a><a href="/tags/Kubernetes/" style="font-size: 0.88rem;">Kubernetes<sup>1</sup></a><a href="/tags/Linux/" style="font-size: 0.88rem;">Linux<sup>2</sup></a><a href="/tags/RBAC/" style="font-size: 0.88rem;">RBAC<sup>1</sup></a><a href="/tags/RocketMQ/" style="font-size: 0.88rem;">RocketMQ<sup>1</sup></a><a href="/tags/grpc/" style="font-size: 0.88rem;">grpc<sup>1</sup></a><a href="/tags/istio/" style="font-size: 0.88rem;">istio<sup>1</sup></a><a href="/tags/k8s/" style="font-size: 0.88rem;">k8s<sup>1</sup></a><a href="/tags/k8s-Dashboard/" style="font-size: 0.88rem;">k8s Dashboard<sup>1</sup></a><a href="/tags/kubeSphere/" style="font-size: 0.88rem;">kubeSphere<sup>1</sup></a><a href="/tags/kubernetes/" style="font-size: 0.88rem;">kubernetes<sup>1</sup></a><a href="/tags/macOS/" style="font-size: 0.88rem;">macOS<sup>3</sup></a><a href="/tags/markdown/" style="font-size: 0.88rem;">markdown<sup>1</sup></a><a href="/tags/rancher/" style="font-size: 0.88rem;">rancher<sup>1</sup></a><a href="/tags/spring-cloud/" style="font-size: 0.88rem;">spring cloud<sup>1</sup></a><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" style="font-size: 0.88rem;">云原生<sup>1</sup></a><a href="/tags/%E4%BE%BF%E6%8D%B7%E6%93%8D%E4%BD%9C/" style="font-size: 0.88rem;">便捷操作<sup>1</sup></a><a href="/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/" style="font-size: 0.88rem;">双亲委派机制<sup>1</sup></a><a href="/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/" style="font-size: 0.88rem;">命令行操作<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/" style="font-size: 0.88rem;">基本指令<sup>1</sup></a><a href="/tags/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" style="font-size: 0.88rem;">基本语法<sup>1</sup></a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 0.88rem;">学习笔记<sup>1</sup></a><a href="/tags/%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86/" style="font-size: 0.88rem;">容器管理<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91/" style="font-size: 0.88rem;">开发<sup>1</sup></a><a href="/tags/%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7/" style="font-size: 0.88rem;">开发技巧<sup>3</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 0.88rem;">微服务<sup>1</sup></a><a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/" style="font-size: 0.88rem;">微服务架构<sup>1</sup></a><a href="/tags/%E5%BF%AB%E9%80%9F%E5%BD%95%E5%85%A5/" style="font-size: 0.88rem;">快速录入<sup>2</sup></a><a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4/" style="font-size: 0.88rem;">操作系统命令<sup>1</sup></a><a href="/tags/%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6/" style="font-size: 0.88rem;">权限控制<sup>1</sup></a><a href="/tags/%E7%90%86%E8%AE%BA%E6%A6%82%E8%BF%B0/" style="font-size: 0.88rem;">理论概述<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E8%A7%92%E8%89%B2/" style="font-size: 0.88rem;">角色<sup>1</sup></a><a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 0.88rem;">转载<sup>4</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 0.88rem;">运维<sup>1</sup></a><a href="/tags/%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5/" style="font-size: 0.88rem;">运维实践<sup>1</sup></a><a href="/tags/%E9%89%B4%E6%9D%83/" style="font-size: 0.88rem;">鉴权<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><a id="switch-commentBarrage" href="javascript:anzhiyu.switchCommentBarrage();" title="开关弹幕"><i class="anzhiyufont anzhiyu-icon-danmu"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="6703724141" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=6703724141&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@6.1.6/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@19.1.3/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>var meting_api = "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&auth=:auth&r=:r";
+</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.cbd.int/mermaid@11.12.2/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  anzhiyu.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo-khaki-delta.vercel.app',
+      region: '',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.44/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-khaki-delta.vercel.app',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"><script async src="/js/anzhiyu/comment_barrage.js"></script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getComment = () => {
+    const runTwikoo = () => {
+      twikoo.getRecentComments({
+        envId: 'https://twikoo-khaki-delta.vercel.app',
+        region: '',
+        pageSize: 6,
+        includeReply: true
+      }).then(function (res) {
+        const twikooArray = res.map(e => {
+          return {
+            'content': changeContent(e.comment),
+            'avatar': e.avatar,
+            'nick': e.nick,
+            'url': e.url + '#' + e.id,
+            'date': new Date(e.created).toISOString()
+          }
+        })
+
+        saveToLocal.set('twikoo-newest-comments', JSON.stringify(twikooArray), 10/(60*24))
+        generateHtml(twikooArray)
+      }).catch(function (err) {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.textContent= "无法获取评论，请确认相关配置是否正确"
+      })
+    }
+
+    if (typeof twikoo === 'object') {
+      runTwikoo()
+    } else {
+      getScript('https://cdn.cbd.int/twikoo@1.6.44/dist/twikoo.all.min.js').then(runTwikoo)
+    }
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'><div class='name'><span>${array[i].nick} </span></div></a>`
+        }
+        
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom && ($dom.innerHTML= result)
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('twikoo-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://cdn.cbd.int/qrcodejs@1.0.0/qrcode.min.js"></script><script src="/js/anzhiyu/right_click_menu.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><script type="text/javascript" src="https://unpkg.zhimg.com/jquery@latest/dist/jquery.min.js"></script><script defer="true" src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/js/txmap.js"></script><canvas class="fireworks" mobile="true"></canvas><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div><!-- hexo injector body_end start --><script>
+    // 全局变量声明区域
+    var fdata = {
+      apiurl: 'https://home.gnaixeuy.cn:8043/',
+      initnumber: 30, //【可选】页面初始化展示文章数量
+      stepnumber: 30, //【可选】每次加载增加的篇数
+      error_img: 'https://npm.elemecdn.com/akilar-candyassets/image/404.gif' //【可选，头像图片加载失败时的默认头像】
+    }
+    //存入本地存储
+    localStorage.setItem("fdatalist",JSON.stringify(fdata))
+    </script>
+    <script data-pjax src="https://npm.elemecdn.com/hexo-filter-fcircle-anzhiyu@1.1.2/assets/js/fetch.js"></script><script data-pjax src="https://blog-1301661174.cos.ap-shanghai.myqcloud.com/js/random-friends-post.js"></script><!-- hexo injector body_end end --></body></html>
