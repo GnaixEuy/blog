@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#172554"/>
+      <stop offset="1" stop-color="#0b1120"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <marker id="ah" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#34d399"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- core loop motif: LLM -> tools -> feedback -->
+  <g transform="translate(830,140)">
+    <circle cx="150" cy="175" r="152" fill="none" stroke="#1e293b" stroke-width="2"/>
+    <rect x="52" y="8" width="196" height="66" rx="14" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+    <text x="150" y="49" fill="#22d3ee" font-size="24" text-anchor="middle" font-weight="700">LLM</text>
+    <rect x="0" y="278" width="132" height="62" rx="14" fill="none" stroke="#475569" stroke-width="2"/>
+    <text x="66" y="316" fill="#94a3b8" font-size="20" text-anchor="middle">工具</text>
+    <rect x="168" y="278" width="132" height="62" rx="14" fill="none" stroke="#475569" stroke-width="2"/>
+    <text x="234" y="316" fill="#94a3b8" font-size="20" text-anchor="middle">记忆</text>
+    <path d="M248,58 C316,96 320,236 268,282" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#ah)"/>
+    <path d="M132,308 L168,308" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#ah)"/>
+    <path d="M32,282 C-20,236 -16,96 52,58" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#ah)"/>
+  </g>
+
+  <text x="88" y="182" fill="#34d399" font-size="25" letter-spacing="3">AI AGENT · 从 0 到 1</text>
+  <text x="86" y="276" fill="#f8fafc" font-size="56" font-weight="700">五十行代码的循环，</text>
+  <text x="86" y="352" fill="#f8fafc" font-size="56" font-weight="700">和剩下那些<tspan fill="url(#accent)">难的事</tspan></text>
+  <rect x="90" y="392" width="118" height="6" rx="3" fill="url(#accent)"/>
+  <text x="90" y="456" fill="#94a3b8" font-size="28">循环 · 模式 · 工具 · 记忆 · 测试</text>
+</svg>
